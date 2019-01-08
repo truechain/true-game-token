@@ -124,7 +124,7 @@ async function checkTxHash (hash, removeList) {
     return
   }
   const topics = receipt.logs[0].topics
-  if (topics[0] !== ethTopic || topics[2] !== addressTo) {
+  if (topics[0] !== ethTopic || topics[2] !== addressTo || topics[1] === addressTo) {
     return
   }
   const { owner } = await TGToken.methods.inlogByTxHash(hash).call()
