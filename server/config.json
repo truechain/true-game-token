@@ -1,0 +1,5 @@
+{
+  "wsProvider": "<true net ws provider>",
+  "port": "<service listen port>",
+  "privKey": "<founder account private key>"
+}

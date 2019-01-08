@@ -6,13 +6,14 @@ const trueTokenABI = require('../sol/TrueToken.abi.json')
 const TGTokenABI = require('../sol/TrueGameToken.abi.json')
 
 const config = require('./config.json')
+const pubConfig = require('../config.json')
 
-const tWeb3 = new Web3('wss://api.truescan.net/ws')
+const tWeb3 = new Web3(config.wsProvider)
 // const eWeb3 = new Web3('https://mainnet.infura.io', 'eth')
 const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
 // const ethTrueAddress = '0xa4d17ab1ee0efdd23edc2869e7ba96b89eecf9ab'
-const ethTrueAddress = '0x2792d677B7Ba6B7072bd2293F64BC0C1CDe23ac1'.toLowerCase() // test eth net
-const betaTGTAddress = '0x912dEb842f3CE780c7A8e0B8e74e42E87C575D97'
+const ethTrueAddress = pubConfig.ethTrueAddress.toLowerCase()
+const betaTGTAddress = pubConfig.betaTGTAddress
 const privKey = config.privKey
 const topic = tWeb3.eth.abi.encodeEventSignature('SendOut(uint256,address,uint256)')
 
