@@ -30,19 +30,27 @@ export default {
     })
   },
   mounted () {
+    if (process.env.NODE_ENV === 'development') {
+      this.init({ data: 'onload' })
+    } else {
+      document.addEventListener('message', this.init)
+    }
     this.updateGameInfo()
-    this.queryAccount().then(address => {
-      console.log(`--- loaded account: ${address}`)
-      this.pause = false
-    }).catch(err => {
-      alert(err.message)
-    })
   },
   methods: {
     ...mapActions({
       queryAccount: 'queryAccount',
       updateGameInfo: 'updateGameInfo'
-    })
+    }),
+    init (e) {
+      if (e.data === 'onload') {
+        this.queryAccount().then(address => {
+          console.log(`--- loaded account: ${address}`)
+          this.pause = false
+        }).catch(console.error)
+        document.removeEventListener('message', this.init)
+      }
+    }
   },
   components: {
     Balance,

@@ -18,6 +18,8 @@ contract TrueTreasure {
   mapping (uint256 => address) public winner;
 
   mapping (address => address) public inviterOf;
+  mapping (address => address[]) private _friends;
+  mapping (address => uint256[]) private _friendsTime;
 
   constructor (TrueGameToken _trueGameToken) public {
     founder = msg.sender;
@@ -47,9 +49,36 @@ contract TrueTreasure {
     TGB.transfer(winner[_index], value);
   }
 
+  function getGameInfo (uint256 _index) public view returns (
+    uint256 gameEndTime,
+    uint256 gameBettings,
+    address gameWinner
+  ) {
+    gameEndTime = endTime[_index];
+    gameBettings = totalBettings(_index);
+    gameWinner = winner[_index];
+  }
+
   function setInviter (address _inviter) public {
     require(inviterOf[msg.sender] == address(0));
     inviterOf[msg.sender] = _inviter;
+    _friends[_inviter].push(msg.sender);
+    _friendsTime[_inviter].push(now);
+  }
+
+  function getFriends (address _user) public view returns (
+    uint256 friendsCount,
+    address[] memory friends,
+    uint256[] memory times
+  ) {
+    friendsCount = _friends[_user].length;
+    uint256 length = friendsCount < 10 ? friendsCount : 10;
+    friends = new address[](length);
+    times = new uint256[](length);
+    for (uint256 i = 0; i < length; i++) {
+      friends[i] = _friends[_user][friendsCount - 1 - i];
+      times[i] = _friendsTime[_user][friendsCount - 1 - i];
+    }
   }
 
   function bet (uint256 _count) public {

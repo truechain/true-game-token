@@ -9,7 +9,6 @@ import { mapState } from 'vuex'
 
 export default {
   name: 'NewGame',
-  props: ['gameIndex'],
   computed: {
     ...mapState({
       gameIndex: state => state.gameIndex

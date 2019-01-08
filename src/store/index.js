@@ -32,6 +32,35 @@ document.addEventListener('message', e => {
   }
 })
 
+const games = new Map()
+class GameInfo {
+  constructor (index, user) {
+    this.index = index
+    this.user = user
+    this.end = false
+  }
+
+  async update () {
+    return Promise.all([
+      TTGame.getGameInfo(this.index)
+        .call()
+        .then(res => {
+          this.endTime = Number(res.gameEndTime) * 1000
+          this.bettings = res.gameBettings
+          this.winner = res.gameWinner
+          this.end = new Date().getTime() > this.endTime
+          return this
+        }),
+      TTGame.bettings(this.index, this.user)
+        .call()
+        .then(res => {
+          this.userBettings = res
+          return res
+        })
+    ])
+  }
+}
+
 const state = {
   address: '---',
   TGB: '---',
@@ -88,6 +117,19 @@ const actions = {
         state.TGB = count.substr(0, res[1].length + 3)
         state.TGBBalance = balance
       })
+  },
+  async getGameInfo ({ state }, index) {
+    let game = games.get(index)
+    if (game) {
+      if (game.end) {
+        return game
+      } else {
+        return game.update()
+      }
+    }
+    game = new GameInfo(index)
+    games.set(index, game)
+    return game.update()
   }
 }
 
