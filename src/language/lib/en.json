@@ -1,3 +1,10 @@
 {
-  "title": "True Treasure"
+  "title": "True Treasure",
+  "C": {
+    "currentBalance": "Current Token",
+    "gamesBoard": "Games Board"
+  },
+  "Game": {
+    "number": "No. {n} Phase"
+  }
 }

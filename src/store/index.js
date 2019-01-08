@@ -33,14 +33,26 @@ document.addEventListener('message', e => {
 })
 
 const state = {
-  address: '',
-  TGB: '0',
-  TGToken,
-  TTGame
+  address: '---',
+  TGB: '---',
+  TGBBalance: '0',
+  gameIndex: -1,
+  endTime: 0
 }
 
 const actions = {
-  async queryAccount ({ state }) {
+  async updateGameInfo ({ state }) {
+    const index = await TTGame.methods.gameIndexNow().call()
+    state.gameIndex = Number(index)
+    const endTime = await TTGame.methods.endTime(index).call()
+    state.endTime = endTime * 1000
+  },
+  async queryAccount ({ state, dispatch }) {
+    if (process.env.NODE_ENV === 'development') {
+      state.address = '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
+      dispatch('updateTGBBalance')
+      return '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
+    }
     return new Promise((resolve, reject) => {
       const timestamp = new Date().getTime()
       const payload = {
@@ -50,17 +62,32 @@ const actions = {
       handles.set(timestamp, (res) => {
         if (res.ok) {
           state.address = res.address
+          dispatch('updateTGBBalance')
           resolve(res.address)
         } else {
-          reject(res.message || 'Unknow Error')
+          reject(new Error(res.message || 'Unknow Error'))
         }
       })
       if (window.originalPostMessage) {
         window.postMessage(JSON.stringify(payload))
       } else {
-        state.address = ''
+        reject(new Error('Invalid running environment'))
       }
     })
+  },
+  async updateTGBBalance ({ state }) {
+    if (!web3.utils.isAddress(state.address)) {
+      state.TGB = '---'
+      return '---'
+    }
+    return TGToken.methods.balanceOf(state.address)
+      .call()
+      .then(balance => {
+        const count = web3.utils.fromWei(String(balance), 'ether')
+        const res = count.match(/^(\d+)\.?/)
+        state.TGB = count.substr(0, res[1].length + 3)
+        state.TGBBalance = balance
+      })
   }
 }
 

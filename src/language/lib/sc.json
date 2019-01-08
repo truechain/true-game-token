@@ -1,3 +1,10 @@
 {
-  "title": "初链夺宝"
+  "title": "初链夺宝",
+  "C": {
+    "currentBalance": "当前游戏币",
+    "gamesBoard": "游戏区"
+  },
+  "Game": {
+    "number": "第{n}期"
+  }
 }
