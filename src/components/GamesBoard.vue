@@ -18,7 +18,7 @@ export default {
   name: 'GameBoard',
   data () {
     return {
-      gamesList: [0]
+      gamesList: []
     }
   },
   computed: {
@@ -32,7 +32,7 @@ export default {
   },
   watch: {
     gameIndex (latestIndex) {
-      for (let i = this.gamesList[0] + 1; i <= latestIndex; i++) {
+      for (let i = this.gamesList[0] || 0; i <= latestIndex; i++) {
         this.gamesList.unshift(i)
       }
     }

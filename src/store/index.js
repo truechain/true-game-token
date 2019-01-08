@@ -42,7 +42,7 @@ class GameInfo {
 
   async update () {
     return Promise.all([
-      TTGame.getGameInfo(this.index)
+      TTGame.methods.getGameInfo(this.index)
         .call()
         .then(res => {
           this.endTime = Number(res.gameEndTime) * 1000
@@ -51,7 +51,7 @@ class GameInfo {
           this.end = new Date().getTime() > this.endTime
           return this
         }),
-      TTGame.bettings(this.index, this.user)
+      TTGame.methods.bettings(this.index, this.user)
         .call()
         .then(res => {
           this.userBettings = res
@@ -66,7 +66,7 @@ const state = {
   TGB: '---',
   TGBBalance: '0',
   gameIndex: -1,
-  endTime: 0
+  endTime: Infinity
 }
 
 const actions = {
@@ -127,7 +127,7 @@ const actions = {
         return game.update()
       }
     }
-    game = new GameInfo(index)
+    game = new GameInfo(index, state.address)
     games.set(index, game)
     return game.update()
   }

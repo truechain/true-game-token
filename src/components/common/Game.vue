@@ -4,20 +4,49 @@
     <div class="info">
       <div>
         <p>本期已购买</p>
-        <span>TGB</span>
+        <span>{{bettings}} TGB</span>
       </div>
       <div>
         <p>已经购买</p>
-        <span>TGB</span>
+        <span>{{userBettings}} TGB</span>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Game',
-  props: ['gameIndex']
+  props: ['gameIndex'],
+  data () {
+    return {
+      bettings: "...",
+      end: false,
+      endTime: 0,
+      index: 1,
+      userBettings: "...",
+      winner: "..."
+    }
+  },
+  created () {
+    this.getGameInfo(this.gameIndex)
+      .then(res => {
+        const game = res[0]
+        this.bettings = game.bettings,
+        this.end = game.end,
+        this.endTime = game.endTime,
+        this.index = game.index,
+        this.userBettings = game.userBettings,
+        this.winner = game.winner
+      })
+  },
+  methods: {
+    ...mapActions({
+      getGameInfo: 'getGameInfo'
+    })
+  }
 }
 </script>
 
