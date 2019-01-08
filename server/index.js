@@ -79,9 +79,9 @@ function sendTrueToken (logID, address, value) {
       gasPrice: '1'
     })
     console.log('> set hash: ' + hash + ' to log: ' + logID)
-  }).on('error'), error => {
+  }).on('error', error => {
     console.log(error.message || error)
-  }
+  })
 }
 
 const app = express()
