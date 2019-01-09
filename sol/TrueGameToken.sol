@@ -15,6 +15,7 @@ contract TrueGameToken {
     address user;
     uint256 value;
     bytes32 txHash;
+    uint256 time;
   }
 
   string public constant name = "True Game Token";
@@ -55,7 +56,8 @@ contract TrueGameToken {
     _inLog[_txHash] = Log({
       user: _to,
       value: _amount,
-      txHash: _txHash
+      txHash: _txHash,
+      time: now
     });
     _usersInLog[_to].push(_txHash);
   }
@@ -71,7 +73,8 @@ contract TrueGameToken {
     _outLog.push(Log({
       user: msg.sender,
       value: _value,
-      txHash: bytes32(0)
+      txHash: bytes32(0),
+      time: now
     }));
     _usersOutLog[msg.sender].push(index);
 
@@ -81,6 +84,7 @@ contract TrueGameToken {
   function updateOutLog (uint256 _logID, bytes32 _hash) public {
     require(msg.sender == founder);
     _outLog[_logID].txHash = _hash;
+    _outLog[_logID].time = now;
   }
 
   function inlogByTxHash(bytes32 _hash) public view returns (address owner, uint256 value) {
@@ -92,10 +96,12 @@ contract TrueGameToken {
     return _usersInLog[_user].length;
   }
   function inLogPaged (address _user, uint256 _page, uint256 _size) public view returns (
+    uint256 count,
     uint256[] memory value,
     bytes32[] memory txHash
   ) {
     require(_size <= 50);
+    count = _usersInLog[_user].length;
     value = new uint256[](_size);
     txHash = new bytes32[](_size);
     bytes32[] storage usersLog = _usersInLog[_user];
@@ -111,10 +117,12 @@ contract TrueGameToken {
     return _usersOutLog[_user].length;
   }
   function outLogPaged (address _user, uint256 _page, uint256 _size) public view returns (
+    uint256 count,
     uint256[] memory value,
     bytes32[] memory txHash
   ) {
     require(_size <= 50);
+    count = _usersOutLog[_user].length;
     value = new uint256[](_size);
     txHash = new bytes32[](_size);
     uint256[] storage usersLog = _usersOutLog[_user];

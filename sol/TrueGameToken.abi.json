@@ -12,6 +12,9 @@
   }],
   "name": "outLogPaged",
   "outputs": [{
+    "name": "count",
+    "type": "uint256"
+  }, {
     "name": "value",
     "type": "uint256[]"
   }, {
@@ -281,6 +284,9 @@
   }],
   "name": "inLogPaged",
   "outputs": [{
+    "name": "count",
+    "type": "uint256"
+  }, {
     "name": "value",
     "type": "uint256[]"
   }, {
