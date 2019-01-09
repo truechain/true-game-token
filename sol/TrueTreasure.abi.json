@@ -1,15 +1,4 @@
 [{
-  "constant": false,
-  "inputs": [{
-    "name": "_index",
-    "type": "uint256"
-  }],
-  "name": "award",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
   "constant": true,
   "inputs": [],
   "name": "gameIndexNow",
@@ -48,6 +37,32 @@
 }, {
   "constant": true,
   "inputs": [{
+    "name": "_user",
+    "type": "address"
+  }],
+  "name": "incomeRecords",
+  "outputs": [{
+    "name": "count",
+    "type": "uint256"
+  }, {
+    "name": "values",
+    "type": "uint256[]"
+  }, {
+    "name": "indexs",
+    "type": "uint256[]"
+  }, {
+    "name": "numbers",
+    "type": "uint256[]"
+  }, {
+    "name": "times",
+    "type": "uint256[]"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [{
     "name": "",
     "type": "uint256"
   }],
@@ -75,6 +90,20 @@
   }, {
     "name": "gameWinner",
     "type": "address"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [{
+    "name": "",
+    "type": "address"
+  }],
+  "name": "totalAward",
+  "outputs": [{
+    "name": "",
+    "type": "uint256"
   }],
   "payable": false,
   "stateMutability": "view",
@@ -113,6 +142,46 @@
 }, {
   "constant": true,
   "inputs": [{
+    "name": "_user",
+    "type": "address"
+  }],
+  "name": "betRecords",
+  "outputs": [{
+    "name": "count",
+    "type": "uint256"
+  }, {
+    "name": "values",
+    "type": "uint256[]"
+  }, {
+    "name": "indexs",
+    "type": "uint256[]"
+  }, {
+    "name": "startNumbers",
+    "type": "uint256[]"
+  }, {
+    "name": "endNumbers",
+    "type": "uint256[]"
+  }, {
+    "name": "times",
+    "type": "uint256[]"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{
+    "name": "_icode",
+    "type": "bytes3"
+  }],
+  "name": "setInviter",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [{
     "name": "",
     "type": "uint256"
   }],
@@ -137,6 +206,20 @@
   "type": "function"
 }, {
   "constant": true,
+  "inputs": [{
+    "name": "",
+    "type": "address"
+  }],
+  "name": "totalReward",
+  "outputs": [{
+    "name": "",
+    "type": "uint256"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
   "inputs": [],
   "name": "TGB",
   "outputs": [{
@@ -145,6 +228,17 @@
   }],
   "payable": false,
   "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{
+    "name": "_index",
+    "type": "uint256"
+  }],
+  "name": "_autoAward",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
   "type": "function"
 }, {
   "constant": true,
@@ -173,17 +267,6 @@
   }],
   "payable": false,
   "stateMutability": "view",
-  "type": "function"
-}, {
-  "constant": false,
-  "inputs": [{
-    "name": "_inviter",
-    "type": "address"
-  }],
-  "name": "setInviter",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
   "type": "function"
 }, {
   "constant": true,
@@ -215,6 +298,20 @@
   "outputs": [{
     "name": "",
     "type": "uint256"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
+  "inputs": [{
+    "name": "",
+    "type": "bytes3"
+  }],
+  "name": "invitationCode",
+  "outputs": [{
+    "name": "",
+    "type": "address"
   }],
   "payable": false,
   "stateMutability": "view",

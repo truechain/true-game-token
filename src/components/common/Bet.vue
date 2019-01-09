@@ -45,6 +45,7 @@ export default {
           console.log('--- bet successful')
           this.updateTGBBalance()
           this.$emit('update')
+          alert('购买成功')
         })
         .catch(err => {
           console.error(err)
