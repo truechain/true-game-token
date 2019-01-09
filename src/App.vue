@@ -7,12 +7,12 @@
       <p class="">{{address}}</p>
     </div>
     <balance />
-    <games-board />
+    <games-board v-if="address !== '---'" />
   </div>
 </template>
 
 <script>
-import { mapActions, mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import Balance from '@/components/Balance'
 import GamesBoard from '@/components/GamesBoard'
@@ -65,7 +65,7 @@ export default {
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   color #333
-  margin-bottom 100px
+  margin-bottom 20px
 #banner
   height 180px
   background-color #0071BC

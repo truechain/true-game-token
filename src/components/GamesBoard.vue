@@ -2,14 +2,16 @@
   <div class="tt-games-board">
     <h2>{{$t('C.gamesBoard')}}</h2>
     <div class="board">
-      <new-game v-if="canCreateNewGame" />
+      <new-game v-if="canCreateNewGame" @update="updateGamesBoard" />
       <game v-for="index in gamesList" :key="index" :gameIndex="index" />
+      <div v-if="oldest" class="more">上拉加载更多</div>
+      <div v-else class="more">已加载全部</div>
     </div>
   </div>
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 import NewGame from './common/NewGame'
 import Game from './common/Game'
@@ -18,7 +20,8 @@ export default {
   name: 'GameBoard',
   data () {
     return {
-      gamesList: []
+      gamesList: [],
+      oldest: 0
     }
   },
   computed: {
@@ -32,10 +35,56 @@ export default {
   },
   watch: {
     gameIndex (latestIndex) {
-      for (let i = this.gamesList[0] || 0; i <= latestIndex; i++) {
+      this.update(latestIndex)
+    }
+  },
+  created () {
+    window.addEventListener('touchend', this.refresh)
+    if (this.gameIndex >= 0) {
+      this.update(this.gameIndex)
+    }
+  },
+  methods: {
+    ...mapActions({
+      updateGameInfo: 'updateGameInfo'
+    }),
+    update (latestIndex) {
+      let start
+      if (this.gamesList.length) {
+        start = this.gamesList[0] + 1
+        this.oldest = this.gamesList[this.gamesList.length - 1]
+      } else {
+        start = Math.max(0, latestIndex - 2)
+        this.oldest = start
+      }
+      for (let i = start; i <= latestIndex; i++) {
         this.gamesList.unshift(i)
       }
+    },
+    updateGamesBoard () {
+      console.log('--- update games board')
+      this.updateGameInfo()
+    },
+    refresh () {
+      const docEl = document.documentElement
+      let scrollTop
+      if (document.documentElement && document.documentElement.scrollTop) {
+        scrollTop = document.documentElement.scrollTop
+      } else if (document.body) {
+        scrollTop = document.body.scrollTop
+      }
+      const height = Math.min(document.body.clientHeight, docEl.clientHeight)
+      if (scrollTop + height >= docEl.scrollHeight) {
+        const start = Math.max(0, this.oldest - 3)
+        for (let i = this.oldest - 1; i >= start; i--) {
+          this.gamesList.push(i)
+        }
+        this.oldest = start
+      }
     }
+  },
+  beforeDestroy () {
+    window.removeEventListener('touchend', this.refresh)
   },
   components: {
     NewGame,
@@ -52,4 +101,7 @@ h2
 .board
   display grid
   grid-gap 16px
+.more
+  text-align center
+  font-size 12px
 </style>

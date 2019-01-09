@@ -3,7 +3,7 @@
     <p class="title">{{$tc('Game.number', gameIndex + 1)}}</p>
     <div class="info">
       <div>
-        <p>本期已购买</p>
+        <p>本期已累计</p>
         <span>{{bettings}} TGB</span>
       </div>
       <div>
@@ -19,7 +19,7 @@
       </div>
       <div v-else>
         <count-down :endTime="endTime" />
-        <bet />
+        <bet @update="updateGameInfo" />
       </div>
     </div>
   </div>
@@ -42,25 +42,42 @@ export default {
       index: 1,
       userBettings: '...',
       winner: '...',
-      timeout: false
+      timeout: false,
+      updateLock: false
     }
   },
   created () {
-    this.getGameInfo(this.gameIndex)
-      .then(game => {
-        this.bettings = game.bettings
-        this.end = game.end
-        this.timeout = new Date().getTime() > game.endTime
-        this.endTime = game.endTime
-        this.index = game.index
-        this.userBettings = game.userBettings
-        this.winner = game.winner
-      })
+    this.updateGameInfo()
+    this.updateRepeatedly()
   },
   methods: {
     ...mapActions({
       getGameInfo: 'getGameInfo'
-    })
+    }),
+    updateGameInfo () {
+      if (this.updateLock) {
+        return
+      }
+      this.updateLock = true
+      this.getGameInfo(this.gameIndex)
+        .then(game => {
+          this.bettings = game.bettings
+          this.end = game.end
+          this.timeout = new Date().getTime() > game.endTime
+          this.endTime = game.endTime
+          this.index = game.index
+          this.userBettings = game.userBettings
+          this.winner = game.winner
+        }).catch(console.error).then(() => {
+          this.updateLock = false
+        })
+    },
+    updateRepeatedly () {
+      if (!this.end) {
+        this.updateGameInfo()
+        setTimeout(this.updateRepeatedly, 4000)
+      }
+    }
   },
   components: {
     CountDown,

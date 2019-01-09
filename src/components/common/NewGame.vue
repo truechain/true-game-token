@@ -1,7 +1,7 @@
 <template>
   <div class="tt-new-game">
     <p class="title">开始新的一期游戏</p>
-    <bet />
+    <bet @update="update" />
   </div>
 </template>
 
@@ -16,6 +16,11 @@ export default {
     ...mapState({
       gameIndex: state => state.gameIndex
     })
+  },
+  methods: {
+    update () {
+      this.$emit('update')
+    }
   },
   components: {
     Bet

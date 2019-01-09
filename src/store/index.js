@@ -132,6 +132,49 @@ const actions = {
     game = new GameInfo(index, state.address)
     games.set(index, game)
     return game.update()
+  },
+  async bet ({ state }, count) {
+    count = Math.round(Math.max(1, Math.min(100, Number(count))))
+    const chainId = await web3.eth.net.getId()
+    const nonce = await web3.eth.getTransactionCount(state.address)
+    const input = TTGame.methods.bet(count).encodeABI()
+    const tx = {
+      to: TTGame.options.address,
+      input,
+      nonce,
+      gas: 4000000,
+      gasPrice: 1,
+      chainId
+    }
+    if (process.env.NODE_ENV === 'development') {
+      const accout = web3.eth.accounts.privateKeyToAccount('0x01')
+      const { rawTransaction } = await accout.signTransaction(tx)
+      return web3.eth.sendSignedTransaction(rawTransaction)
+    }
+    return new Promise((resolve, reject) => {
+      const timestamp = new Date().getTime()
+      const payload = {
+        timestamp,
+        method: 'get_signedTx',
+        data: {
+          from: state.address,
+          tx
+        },
+        message: `来自初链夺宝游戏的交易申请：购买${count}份奖券`
+      }
+      handles.set(timestamp, (res) => {
+        if (res.ok) {
+          web3.eth.sendSignedTransaction(res.rawTx).then(resolve)
+        } else {
+          reject(new Error(res.message || 'Unknow Error'))
+        }
+      })
+      if (window.originalPostMessage) {
+        window.postMessage(JSON.stringify(payload))
+      } else {
+        reject(new Error('Invalid running environment'))
+      }
+    })
   }
 }
 

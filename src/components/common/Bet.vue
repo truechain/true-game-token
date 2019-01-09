@@ -6,27 +6,53 @@
       <input type="number" v-model="count" @change="checkCount">
       <span class="unit">份</span>
     </div>
-    <div class="buy" @click="bet">
-      购 买
+    <div class="buy" @click="bet" :class="{
+      'pending': pending
+    }">
+      <span v-if="pending">请求处理中...</span>
+      <span v-else>购 买</span>
     </div>
   </div>
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Bet',
   data () {
     return {
-      count: 1
+      count: 1,
+      pending: false
     }
   },
   methods: {
+    ...mapActions({
+      betOnChain: 'bet',
+      updateTGBBalance: 'updateTGBBalance'
+    }),
     checkCount () {
       const nCount = Number(this.count)
       this.count = Math.round(Math.max(1, Math.min(100, nCount)))
     },
     bet () {
-      // TODO
+      if (this.pending) {
+        return
+      }
+      this.pending = true
+      this.betOnChain(this.count)
+        .then(() => {
+          console.log('--- bet successful')
+          this.updateTGBBalance()
+          this.$emit('update')
+        })
+        .catch(err => {
+          console.error(err)
+          alert('购买失败，请确定已成功通过钱包签名交易，并检查网络链接')
+        })
+        .then(() => {
+          this.pending = false
+        })
     }
   }
 }
@@ -64,4 +90,6 @@ export default {
   line-height 30px
   text-align center
   border-radius 15px
+.pending
+  background-color #999
 </style>

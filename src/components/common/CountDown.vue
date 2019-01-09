@@ -105,7 +105,7 @@ export default {
     color #101010
     margin 6px 0
     span
-      width 40px
+      width 38px
       height 50px
       box-sizing border-box
       border solid 1px #bbb
