@@ -11,34 +11,49 @@
         <span>{{userBettings}} TGB</span>
       </div>
     </div>
+    <div v-if="endTime">
+      <div v-if="timeout" class="end">
+        <p>最终赢家</p>
+        <span v-if="winner !== '0x0000000000000000000000000000000000000000'">{{winner}}</span>
+        <span v-else>等待开局...</span>
+      </div>
+      <div v-else>
+        <count-down :endTime="endTime" />
+        <bet />
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
 
+import CountDown from './CountDown'
+import Bet from './Bet'
+
 export default {
   name: 'Game',
   props: ['gameIndex'],
   data () {
     return {
-      bettings: "...",
+      bettings: '...',
       end: false,
       endTime: 0,
       index: 1,
-      userBettings: "...",
-      winner: "..."
+      userBettings: '...',
+      winner: '...',
+      timeout: false
     }
   },
   created () {
     this.getGameInfo(this.gameIndex)
-      .then(res => {
-        const game = res[0]
-        this.bettings = game.bettings,
-        this.end = game.end,
-        this.endTime = game.endTime,
-        this.index = game.index,
-        this.userBettings = game.userBettings,
+      .then(game => {
+        this.bettings = game.bettings
+        this.end = game.end
+        this.timeout = new Date().getTime() > game.endTime
+        this.endTime = game.endTime
+        this.index = game.index
+        this.userBettings = game.userBettings
         this.winner = game.winner
       })
   },
@@ -46,6 +61,10 @@ export default {
     ...mapActions({
       getGameInfo: 'getGameInfo'
     })
+  },
+  components: {
+    CountDown,
+    Bet
   }
 }
 </script>
@@ -68,6 +87,7 @@ export default {
     display grid
     grid-template-columns repeat(2, 1fr)
     grid-gap 12px
+    margin-bottom 12px
     div
       border solid 1px #bbb
       border-radius 6px
@@ -81,4 +101,15 @@ export default {
       line-height 40px
       font-weight 500
       white-space nowrap
+  .end
+    border solid 1px #bbb
+    border-radius 6px
+    text-align center
+    padding 10px
+    p
+      font-size 14px
+      color #101010
+      font-weight 500
+    span
+      font-size 12px
 </style>

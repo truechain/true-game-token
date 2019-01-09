@@ -65,7 +65,7 @@ export default {
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
   color #333
-  margin-bottom 200px
+  margin-bottom 100px
 #banner
   height 180px
   background-color #0071BC

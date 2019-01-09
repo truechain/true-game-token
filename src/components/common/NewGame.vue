@@ -1,11 +1,14 @@
 <template>
   <div class="tt-new-game">
     <p class="title">开始新的一期游戏</p>
+    <bet />
   </div>
 </template>
 
 <script>
 import { mapState } from 'vuex'
+
+import Bet from './Bet'
 
 export default {
   name: 'NewGame',
@@ -13,6 +16,9 @@ export default {
     ...mapState({
       gameIndex: state => state.gameIndex
     })
+  },
+  components: {
+    Bet
   }
 }
 </script>

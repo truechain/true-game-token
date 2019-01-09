@@ -48,7 +48,7 @@ class GameInfo {
           this.endTime = Number(res.gameEndTime) * 1000
           this.bettings = res.gameBettings
           this.winner = res.gameWinner
-          this.end = new Date().getTime() > this.endTime
+          this.end = new Date().getTime() > this.endTime && this.winner !== '0x0000000000000000000000000000000000000000'
           return this
         }),
       TTGame.methods.bettings(this.index, this.user)
@@ -57,7 +57,9 @@ class GameInfo {
           this.userBettings = res
           return res
         })
-    ])
+    ]).then(res => {
+      return res[0]
+    })
   }
 }
 
