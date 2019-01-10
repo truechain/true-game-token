@@ -183,7 +183,7 @@ contract TrueTreasure {
       _incomeRecords[winnerAdr].push(IncomeRecord({
         value: value,
         index: gameIndexNow,
-        number: winnerID,
+        number: winnerID + 1,
         time: now
       }));
       TGB.transfer(winnerAdr, value);
