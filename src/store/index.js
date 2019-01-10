@@ -71,6 +71,8 @@ class GameInfo {
 const state = {
   address: '---',
   TGB: '---',
+  TGBAward: '---',
+  TGBReward: '---',
   TGBBalance: '0',
   TT: '---',
   TTBalance: '0',
@@ -120,14 +122,30 @@ const actions = {
       state.TGB = '---'
       return '---'
     }
-    return TGToken.methods.balanceOf(state.address)
-      .call()
-      .then(balance => {
-        const count = web3.utils.fromWei(String(balance), 'ether')
-        const res = count.match(/^(\d+)\.?/)
-        state.TGB = count.substr(0, res[1].length + 3)
-        state.TGBBalance = balance
-      })
+    return Promise.all([
+      TGToken.methods.balanceOf(state.address)
+        .call()
+        .then(balance => {
+          const count = web3.utils.fromWei(String(balance), 'ether')
+          const res = count.match(/^(\d+)\.?/)
+          state.TGB = count.substr(0, res[1].length + 3)
+          state.TGBBalance = balance
+        }),
+      TTGame.methods.totalAward(state.address)
+        .call()
+        .then(balance => {
+          const count = web3.utils.fromWei(String(balance), 'ether')
+          const res = count.match(/^(\d+)\.?/)
+          state.TGBAward = count.substr(0, res[1].length + 3)
+        }),
+      TTGame.methods.totalReward(state.address)
+        .call()
+        .then(balance => {
+          const count = web3.utils.fromWei(String(balance), 'ether')
+          const res = count.match(/^(\d+)\.?/)
+          state.TGBReward = count.substr(0, res[1].length + 3)
+        })
+    ])
   },
   async updateTTBalance ({ state }) {
     if (!web3.utils.isAddress(state.address)) {
@@ -155,6 +173,45 @@ const actions = {
     game = new GameInfo(index, state.address)
     games.set(index, game)
     return game.update()
+  },
+  async getBetRecords ({ state }) {
+    if (state.address === '---') {
+      return []
+    }
+    return TTGame.methods.betRecords(state.address)
+      .call()
+      .then(res => {
+        const records = []
+        for (let i = 0; i < res.count; i++) {
+          records.push({
+            value: web3.utils.fromWei(String(res.values[i]), 'ether'),
+            index: Number(res.indexs[i]),
+            startNumber: Number(res.startNumbers[i]),
+            endNumber: Number(res.endNumbers[i]),
+            time: new Date(Number(res.times[i]) * 1000)
+          })
+        }
+        return records
+      })
+  },
+  async getIncomeRecords ({ state }) {
+    if (state.address === '---') {
+      return []
+    }
+    return TTGame.methods.incomeRecords(state.address)
+      .call()
+      .then(res => {
+        const records = []
+        for (let i = 0; i < res.count; i++) {
+          records.push({
+            value: web3.utils.fromWei(String(res.values[i]), 'ether'),
+            index: Number(res.indexs[i]),
+            number: Number(res.numbers[i]),
+            time: new Date(Number(res.times[i]) * 1000)
+          })
+        }
+        return records
+      })
   },
   async bet ({ state }, count) {
     count = Math.round(Math.max(1, Math.min(100, Number(count))))
