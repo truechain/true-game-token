@@ -172,7 +172,7 @@ contract TrueTreasure {
     endTime[gameIndexNow] = now + interval;
   }
 
-  function _autoAward (uint256 _index) public {
+  function _autoAward (uint256 _index) private {
     if (winner[_index] == address(0) && finalRandomSeed[_index] != bytes32(0)) {
       uint256 total = totalBettings(_index);
       uint256 winnerID =  uint256(finalRandomSeed[_index]) % total;
