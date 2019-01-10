@@ -23,14 +23,14 @@
       <div :class="{ 'focus': focusMenu === 1 }" @click="toggleMenu(1)">收入明细</div>
     </div>
     <ul v-if="focusMenu === 0" class="details">
-      <li v-for="item in records" :key="item.index">
+      <li v-for="(item, index) in records" :key="index">
         <p class="title">买入[{{$tc('Game.number', item.index + 1)}}] <span>-{{item.value}} TGB</span></p>
         <p>时间: {{item.time.toLocaleString()}}</p>
         <p>号码: [{{item.startNumber}} - {{item.endNumber}}]</p>
       </li>
     </ul>
     <ul v-if="focusMenu === 1" class="details">
-      <li v-for="item in records" :key="item.index">
+      <li v-for="(item, index) in records" :key="index">
         <p class="title">
           {{ item.number ? '中奖' : '邀请奖励' }}
           [{{$tc('Game.number', item.index + 1)}}]
