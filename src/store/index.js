@@ -4,6 +4,7 @@ import Vuex from 'vuex'
 import Web3 from 'web3'
 import TGTokenABI from '../../sol/TrueGameToken.abi.json'
 import TTreasureABI from '../../sol/TrueTreasure.abi.json'
+import trueTokenABI from '../../sol/TrueToken.abi.json'
 import config from '../../config.json'
 
 Vue.use(Vuex)
@@ -11,6 +12,10 @@ Vue.use(Vuex)
 const web3 = new Web3('https://api.truescan.net/rpc')
 const TGToken = new web3.eth.Contract(TGTokenABI, config.betaTGTAddress)
 const TTGame = new web3.eth.Contract(TTreasureABI, config.betaGameAddress)
+
+// const eWeb3 = new Web3('https://mainnet.infura.io', 'eth')
+const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
+const trueToken = new eWeb3.eth.Contract(trueTokenABI, config.ethTrueAddress)
 
 const handles = new Map()
 document.addEventListener('message', e => {
@@ -67,6 +72,8 @@ const state = {
   address: '---',
   TGB: '---',
   TGBBalance: '0',
+  TT: '---',
+  TTBalance: '0',
   gameIndex: -1,
   endTime: Infinity
 }
@@ -82,6 +89,7 @@ const actions = {
     if (process.env.NODE_ENV === 'development') {
       state.address = '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
       dispatch('updateTGBBalance')
+      dispatch('updateTTBalance')
       return '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
     }
     return new Promise((resolve, reject) => {
@@ -94,6 +102,7 @@ const actions = {
         if (res.ok) {
           state.address = res.address
           dispatch('updateTGBBalance')
+          dispatch('updateTTBalance')
           resolve(res.address)
         } else {
           reject(new Error(res.message || 'Unknow Error'))
@@ -118,6 +127,20 @@ const actions = {
         const res = count.match(/^(\d+)\.?/)
         state.TGB = count.substr(0, res[1].length + 3)
         state.TGBBalance = balance
+      })
+  },
+  async updateTTBalance ({ state }) {
+    if (!web3.utils.isAddress(state.address)) {
+      state.TT = '---'
+      return '---'
+    }
+    return trueToken.methods.balanceOf(state.address)
+      .call()
+      .then(balance => {
+        const count = web3.utils.fromWei(String(balance), 'ether')
+        const res = count.match(/^(\d+)\.?/)
+        state.TT = count.substr(0, res[1].length + 3)
+        state.TTBalance = balance
       })
   },
   async getGameInfo ({ state }, index) {

@@ -5,6 +5,7 @@
         <h1>{{$t('title')}}</h1>
       </div>
       <p class="">{{address}}</p>
+      <router-link to="/personal">个人中心</router-link>
     </div>
     <balance />
     <games-board v-if="address !== '---'" />
@@ -19,38 +20,18 @@ import GamesBoard from '@/components/GamesBoard'
 
 export default {
   name: 'Home',
-  data () {
-    return {
-      pause: true
-    }
-  },
   computed: {
     ...mapState({
       address: state => state.address
     })
   },
   mounted () {
-    if (process.env.NODE_ENV === 'development') {
-      this.init({ data: 'onload' })
-    } else {
-      document.addEventListener('message', this.init)
-    }
     this.updateGameInfo()
   },
   methods: {
     ...mapActions({
-      queryAccount: 'queryAccount',
       updateGameInfo: 'updateGameInfo'
-    }),
-    init (e) {
-      if (e.data === 'onload') {
-        this.queryAccount().then(address => {
-          console.log(`--- loaded account: ${address}`)
-          this.pause = false
-        }).catch(console.error)
-        document.removeEventListener('message', this.init)
-      }
-    }
+    })
   },
   components: {
     Balance,
