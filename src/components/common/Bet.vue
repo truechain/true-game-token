@@ -79,8 +79,7 @@ export default {
   input
     flex 2 1 auto
     border solid 1px #bbb
-    padding 0 .5em
-    font-family inherit
+    padding 0 .8em
     text-align start
   .unit
     flex 0 0 30px
@@ -88,9 +87,9 @@ export default {
 .buy
   background-color #0071bc
   color #fff
-  line-height 30px
+  line-height 36px
   text-align center
-  border-radius 15px
+  border-radius 18px
 .pending
   background-color #999
 </style>

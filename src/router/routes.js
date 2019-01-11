@@ -1,5 +1,6 @@
 import Home from '@/pages/Home'
 import Personal from '@/pages/Personal'
+import Exchange from '@/pages/Exchange'
 
 export default [
   {
@@ -11,5 +12,10 @@ export default [
     path: '/personal',
     name: 'Personal',
     component: Personal
+  },
+  {
+    path: '/exchange',
+    name: 'Exchange',
+    component: Exchange
   }
 ]

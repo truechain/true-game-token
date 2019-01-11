@@ -5,7 +5,12 @@
         <h1>{{$t('title')}}</h1>
       </div>
       <p class="">{{address}}</p>
-      <router-link to="/personal">个人中心</router-link>
+      <nav>
+        <router-link class="personal" to="/personal">个人中心</router-link>
+        <router-link class="friends" to="/personal">邀请好友</router-link>
+        <router-link class="intro" to="/personal">游戏介绍</router-link>
+        <router-link class="exchange" to="/exchange">兑换TGB</router-link>
+      </nav>
     </div>
     <balance />
     <games-board v-if="address !== '---'" />
@@ -44,6 +49,7 @@ export default {
 #banner
   height 180px
   background-color #0071BC
+  position relative
   color #fff
   padding 20px 16px
   box-sizing border-box
@@ -54,4 +60,31 @@ export default {
   h1
     font-size 20px
     line-height 28px
+
+nav a
+  position absolute
+  background #fff
+  color #333
+  font-size 14px
+  line-height 30px
+.personal
+  left 0
+  top 80px
+  border-radius 0 6px 6px 0
+  padding 0 10px 0 6px
+.friends
+  left 0
+  top 130px
+  border-radius 0 6px 6px 0
+  padding 0 10px 0 6px
+.intro
+  right 0
+  top 80px
+  border-radius 6px 0 0 6px
+  padding 0 6px 0 10px
+.exchange
+  right 0
+  top 130px
+  border-radius 6px 0 0 6px
+  padding 0 6px 0 10px
 </style>
