@@ -42,7 +42,7 @@ contract TrueTreasure {
   mapping (address => uint256) public totalAward;
   mapping (address => uint256) public totalReward;
 
-  mapping (bytes3 => address) public invitationCode;
+  mapping (bytes4 => address) public invitationCode;
 
   constructor (TrueGameToken _trueGameToken) public {
     founder = msg.sender;
@@ -72,7 +72,7 @@ contract TrueTreasure {
     gameWinner = winner[_index];
   }
 
-  function setInviter (bytes3 _icode) public {
+  function setInviter (bytes4 _icode) public {
     address inviter = invitationCode[_icode];
     require(inviter != address(0));
     require(inviterOf[msg.sender] == address(0));
@@ -141,9 +141,13 @@ contract TrueTreasure {
     }
   }
 
-  function bet (uint256 _count) public {
-    bytes3 iCode = bytes3(bytes20(msg.sender));
+  function genICode () public {
+    bytes4 iCode = bytes4(bytes20(msg.sender));
     invitationCode[iCode] = msg.sender;
+  }
+
+  function bet (uint256 _count) public {
+    genICode();
     _randomSeed = keccak256(abi.encodePacked(_randomSeed, msg.sender, now, gameIndexNow));
     if (now > endTime[gameIndexNow]) {
       _nextGame();
