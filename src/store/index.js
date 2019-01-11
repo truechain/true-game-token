@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
 
+import axios from 'axios'
 import Web3 from 'web3'
 import TGTokenABI from '../../sol/TrueGameToken.abi.json'
 import TTreasureABI from '../../sol/TrueTreasure.abi.json'
@@ -16,6 +17,8 @@ const TTGame = new web3.eth.Contract(TTreasureABI, config.betaGameAddress)
 // const eWeb3 = new Web3('https://mainnet.infura.io', 'eth')
 const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
 const trueToken = new eWeb3.eth.Contract(trueTokenABI, config.ethTrueAddress)
+
+const admin = config.adminAddress
 
 const handles = new Map()
 document.addEventListener('message', e => {
@@ -89,10 +92,10 @@ const actions = {
   },
   async queryAccount ({ state, dispatch }) {
     if (process.env.NODE_ENV === 'development') {
-      state.address = '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
+      state.address = '0x0dfa5958ca09e57d775bb0005de4023338becaeb'
       dispatch('updateTGBBalance')
       dispatch('updateTTBalance')
-      return '0x7e5f4552091a69125d5dfcb7b8c2659029395bdf'
+      return '0x0dfa5958ca09e57d775bb0005de4023338becaeb'
     }
     return new Promise((resolve, reject) => {
       const timestamp = new Date().getTime()
@@ -227,7 +230,7 @@ const actions = {
       chainId
     }
     if (process.env.NODE_ENV === 'development') {
-      const accout = web3.eth.accounts.privateKeyToAccount('0x01')
+      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
       const { rawTransaction } = await accout.signTransaction(tx)
       return web3.eth.sendSignedTransaction(rawTransaction)
     }
@@ -244,7 +247,7 @@ const actions = {
       }
       handles.set(timestamp, (res) => {
         if (res.ok) {
-          web3.eth.sendSignedTransaction(res.rawTx).then(resolve)
+          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
         } else {
           reject(new Error(res.message || 'Unknow Error'))
         }
@@ -255,6 +258,137 @@ const actions = {
         reject(new Error('Invalid running environment'))
       }
     })
+  },
+  async exchangeOut ({ state }, value) {
+    const res = await axios.get(config.backend).catch(err => { return err })
+    if (res.name === 'Error') {
+      throw new Error('No backend service')
+    }
+    const chainId = await web3.eth.net.getId()
+    const nonce = await web3.eth.getTransactionCount(state.address)
+    const valueWei = web3.utils.toWei(value, 'ether')
+    const input = TGToken.methods.sendOut(valueWei).encodeABI()
+    const tx = {
+      to: TGToken.options.address,
+      input,
+      nonce,
+      gas: 500000,
+      gasPrice: 1,
+      chainId
+    }
+    if (process.env.NODE_ENV === 'development') {
+      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
+      const { rawTransaction } = await accout.signTransaction(tx)
+      return web3.eth.sendSignedTransaction(rawTransaction)
+    }
+    return new Promise((resolve, reject) => {
+      const timestamp = new Date().getTime()
+      const payload = {
+        timestamp,
+        method: 'get_signedTx',
+        data: {
+          from: state.address,
+          tx
+        },
+        message: `来自初链夺宝游戏的交易申请：等比兑回${value}TGB至TRUE`
+      }
+      handles.set(timestamp, (res) => {
+        if (res.ok) {
+          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
+        } else {
+          reject(new Error(res.message || 'Unknow Error'))
+        }
+      })
+      if (window.originalPostMessage) {
+        window.postMessage(JSON.stringify(payload))
+      } else {
+        reject(new Error('Invalid running environment'))
+      }
+    })
+  },
+  async exchangeIn ({ state }, value) {
+    const res = await axios.get(config.backend).catch(err => { return err })
+    if (res.name === 'Error') {
+      return {
+        error: true,
+        code: 1
+      }
+    }
+    const chainId = await eWeb3.eth.net.getId()
+    const nonce = await eWeb3.eth.getTransactionCount(state.address)
+    const valueWei = web3.utils.toWei(value, 'ether')
+    const input = trueToken.methods.transfer(admin, valueWei).encodeABI()
+    const tx = {
+      to: trueToken.options.address,
+      input,
+      nonce,
+      gas: 100000,
+      gasPrice: '10000000000',
+      chainId
+    }
+    if (process.env.NODE_ENV === 'development') {
+      const accout = eWeb3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
+      const { rawTransaction } = await accout.signTransaction(tx)
+      return new Promise((resolve, reject) => {
+        eWeb3.eth.sendSignedTransaction(rawTransaction).on('transactionHash', hash => {
+          axios.post(config.backend, {
+            hash
+          }).then(res => {
+            if (res.data === 'ok') {
+              resolve({ error: false })
+            } else {
+              resolve({ error: true, code: 5 })
+            }
+          }).catch(() => {
+            resolve({ error: true, code: 6 })
+          })
+        }).on('error', () => {
+          resolve({ error: true, code: 4 })
+        })
+      })
+    } else {
+      return new Promise((resolve, reject) => {
+        const timestamp = new Date().getTime()
+        const payload = {
+          timestamp,
+          method: 'get_signedTx',
+          data: {
+            from: state.address,
+            tx
+          },
+          message: `来自初链夺宝游戏的交易申请：等比兑换${value}TRUE至TGB`
+        }
+        handles.set(timestamp, (res) => {
+          if (res.ok) {
+            eWeb3.eth.sendSignedTransaction(res.rawTx).on('transactionHash', hash => {
+              axios.post(config.backend, {
+                hash
+              }).then(res => {
+                if (res.data === 'ok') {
+                  resolve({ error: false })
+                } else {
+                  resolve({ error: true, code: 5 })
+                }
+              }).catch(() => {
+                resolve({ error: true, code: 6 })
+              })
+            }).on('error', () => {
+              resolve({ error: true, code: 4 })
+            })
+          } else {
+            resolve(2)
+          }
+        })
+        if (window.originalPostMessage) {
+          window.postMessage(JSON.stringify(payload))
+        } else {
+          resolve(3)
+        }
+      }).catch(err => {
+        alert(err.message || err)
+        return 4
+      })
+    }
   }
 }
 

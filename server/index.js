@@ -114,9 +114,9 @@ app.listen(config.port)
 
 const ethTopic = eWeb3.eth.abi.encodeEventSignature('Transfer(address,address,uint256)')
 const addressTo = '0x000000000000000000000000' + admin.address.substr(2, 40).toLowerCase()
-async function checkTxHash (hash, removeList) {
+async function checkTxHash (hash, removeList, confirmedBlock) {
   const receipt = await eWeb3.eth.getTransactionReceipt(hash)
-  if (!receipt) {
+  if (!receipt || receipt.blockNumber > confirmedBlock) {
     return
   }
   removeList.push(hash)
@@ -140,12 +140,13 @@ async function checkTxHash (hash, removeList) {
     gasPrice: '1'
   })
 }
-function checkTxList () {
+async function checkTxList () {
   const before = pendingTxList.size
   const removeList = []
   const promiseList = []
+  const blockNumber = await eWeb3.eth.getBlockNumber()
   pendingTxList.forEach(hash => {
-    promiseList.push(checkTxHash(hash, removeList))
+    promiseList.push(checkTxHash(hash, removeList, blockNumber - 12))
   })
   Promise.all(promiseList).catch(err => {
     console.log(err.message || err)
