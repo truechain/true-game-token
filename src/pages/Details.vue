@@ -99,6 +99,8 @@ export default {
   .hash
     font-size 12px
     color #888
-    transform scale(.8)
-    transform-origin 0%
+    overflow hidden
+    white-space nowrap
+    text-overflow ellipsis
+    line-height 20px
 </style>

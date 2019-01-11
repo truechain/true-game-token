@@ -19,6 +19,7 @@ const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
 const trueToken = new eWeb3.eth.Contract(trueTokenABI, config.ethTrueAddress)
 
 const admin = config.adminAddress
+const largeNumber = '100000000000000000000000000'
 
 const handles = new Map()
 document.addEventListener('message', e => {
@@ -164,6 +165,17 @@ const actions = {
         state.TTBalance = balance
       })
   },
+  async checkInvitationCode ({ state }) {
+    if (!web3.utils.isAddress(state.address)) {
+      state.TT = '---'
+      return '---'
+    }
+    return TTGame.methods.invitationCode(state.address.substr(0, 8))
+      .call()
+      .then(address => {
+        return address !== '0x0000000000000000000000000000000000000000'
+      })
+  },
   async getGameInfo ({ state }, index) {
     let game = games.get(index)
     if (game) {
@@ -228,13 +240,55 @@ const actions = {
     return method(state.address, page, 10).call().then(res => {
       const records = []
       for (let i = 0; i < res.count; i++) {
-        records.push({
+        records.unshift({
           value: web3.utils.fromWei(String(res.value[i]), 'ether'),
           txHash: res.txHash[i],
           time: new Date(Number(res.time[i]) * 1000)
         })
       }
       return records
+    })
+  },
+  async approve ({ state }) {
+    const chainId = await web3.eth.net.getId()
+    const nonce = await web3.eth.getTransactionCount(state.address)
+    const input = TGToken.methods.approve(config.betaGameAddress, largeNumber).encodeABI()
+    const tx = {
+      to: TGToken.options.address,
+      input,
+      nonce,
+      gas: 4000000,
+      gasPrice: 1,
+      chainId
+    }
+    if (process.env.NODE_ENV === 'development') {
+      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
+      const { rawTransaction } = await accout.signTransaction(tx)
+      return web3.eth.sendSignedTransaction(rawTransaction)
+    }
+    return new Promise((resolve, reject) => {
+      const timestamp = new Date().getTime()
+      const payload = {
+        timestamp,
+        method: 'get_signedTx',
+        data: {
+          from: state.address,
+          tx
+        },
+        message: `来自初链夺宝游戏的交易申请：授权游戏使用TGB`
+      }
+      handles.set(timestamp, (res) => {
+        if (res.ok) {
+          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
+        } else {
+          reject(new Error(res.message || 'Unknow Error'))
+        }
+      })
+      if (window.originalPostMessage) {
+        window.postMessage(JSON.stringify(payload))
+      } else {
+        reject(new Error('Invalid running environment'))
+      }
     })
   },
   async bet ({ state }, count) {
