@@ -97,7 +97,8 @@ export default {
     font-weight 500
     margin 0 10px
   input
-    flex 1 1 80px
+    flex 1 1 auto
+    width 60px
     border solid 1px #bbb
     padding 0 .8em
     text-align start
