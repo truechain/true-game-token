@@ -7,8 +7,8 @@
       <p class="">{{address}}</p>
       <nav>
         <router-link class="personal" to="/personal">个人中心</router-link>
-        <router-link class="friends" to="/personal">邀请好友</router-link>
-        <router-link class="intro" to="/personal">游戏介绍</router-link>
+        <router-link class="friends" to="/friends">邀请好友</router-link>
+        <router-link class="intro" to="/intro">游戏介绍</router-link>
         <router-link class="exchange" to="/exchange">兑换TGB</router-link>
       </nav>
     </div>

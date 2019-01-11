@@ -75,6 +75,7 @@ contract TrueTreasure {
   function setInviter (bytes4 _icode) public {
     address inviter = invitationCode[_icode];
     require(inviter != address(0));
+    require(inviter != msg.sender);
     require(inviterOf[msg.sender] == address(0));
     inviterOf[msg.sender] = inviter;
     _friends[inviter].push(msg.sender);

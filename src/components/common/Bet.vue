@@ -36,8 +36,8 @@ export default {
     ...mapActions({
       approve: 'approve',
       betOnChain: 'bet',
-      updateTGBBalance: 'updateTGBBalance',
-      checkInvitationCode: 'checkInvitationCode'
+      getBetRecords: 'getBetRecords',
+      updateTGBBalance: 'updateTGBBalance'
     }),
     checkCount () {
       const nCount = Number(this.count)
@@ -48,8 +48,8 @@ export default {
         return
       }
       this.pending = true
-      this.checkInvitationCode().then(res => {
-        if (!res) {
+      this.getBetRecords().then(res => {
+        if (res.length === 0) {
           asyncAlert('第一次游玩前需要先使用TGB授权')
           return this.approve()
         }

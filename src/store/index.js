@@ -22,6 +22,20 @@ const admin = config.adminAddress
 const largeNumber = '100000000000000000000000000'
 
 const handles = new Map()
+function addHandle (payload, resolve, reject) {
+  handles.set(payload.timestamp, (res) => {
+    if (res.ok) {
+      web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
+    } else {
+      reject(new Error(res.message || 'Unknow Error'))
+    }
+  })
+  if (window.originalPostMessage) {
+    window.postMessage(JSON.stringify(payload))
+  } else {
+    reject(new Error('Invalid running environment'))
+  }
+}
 document.addEventListener('message', e => {
   let res
   if (e.data) {
@@ -170,7 +184,7 @@ const actions = {
       state.TT = '---'
       return '---'
     }
-    return TTGame.methods.invitationCode(state.address.substr(0, 8))
+    return TTGame.methods.invitationCode(state.address.substr(0, 10))
       .call()
       .then(address => {
         return address !== '0x0000000000000000000000000000000000000000'
@@ -249,6 +263,58 @@ const actions = {
       return records
     })
   },
+  async getFriends ({ state }) {
+    if (state.address === '---') {
+      return []
+    }
+    return TTGame.methods.getFriends(state.address).call().then(res => {
+      const records = []
+      for (let i = 0; i < res.friends.length; i++) {
+        records.push({
+          friend: res.friends[i],
+          time: new Date(Number(res.times[i]) * 1000)
+        })
+      }
+      return {
+        count: res.friendsCount,
+        records
+      }
+    })
+  },
+  async genICode ({ state }) {
+    if (state.address === '---') {
+      return []
+    }
+    const chainId = await web3.eth.net.getId()
+    const nonce = await web3.eth.getTransactionCount(state.address)
+    const input = TTGame.methods.genICode().encodeABI()
+    const tx = {
+      to: TTGame.options.address,
+      input,
+      nonce,
+      gas: 4000000,
+      gasPrice: 1,
+      chainId
+    }
+    if (process.env.NODE_ENV === 'development') {
+      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
+      const { rawTransaction } = await accout.signTransaction(tx)
+      return web3.eth.sendSignedTransaction(rawTransaction)
+    }
+    return new Promise((resolve, reject) => {
+      const timestamp = new Date().getTime()
+      const payload = {
+        timestamp,
+        method: 'get_signedTx',
+        data: {
+          from: state.address,
+          tx
+        },
+        message: `来自初链夺宝游戏的交易申请：创建游戏邀请码`
+      }
+      addHandle(payload, resolve, reject)
+    })
+  },
   async approve ({ state }) {
     const chainId = await web3.eth.net.getId()
     const nonce = await web3.eth.getTransactionCount(state.address)
@@ -277,18 +343,7 @@ const actions = {
         },
         message: `来自初链夺宝游戏的交易申请：授权游戏使用TGB`
       }
-      handles.set(timestamp, (res) => {
-        if (res.ok) {
-          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
-        } else {
-          reject(new Error(res.message || 'Unknow Error'))
-        }
-      })
-      if (window.originalPostMessage) {
-        window.postMessage(JSON.stringify(payload))
-      } else {
-        reject(new Error('Invalid running environment'))
-      }
+      addHandle(payload, resolve, reject)
     })
   },
   async bet ({ state }, count) {
@@ -320,18 +375,7 @@ const actions = {
         },
         message: `来自初链夺宝游戏的交易申请：购买${count}份奖券`
       }
-      handles.set(timestamp, (res) => {
-        if (res.ok) {
-          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
-        } else {
-          reject(new Error(res.message || 'Unknow Error'))
-        }
-      })
-      if (window.originalPostMessage) {
-        window.postMessage(JSON.stringify(payload))
-      } else {
-        reject(new Error('Invalid running environment'))
-      }
+      addHandle(payload, resolve, reject)
     })
   },
   async exchangeOut ({ state }, value) {
@@ -367,18 +411,7 @@ const actions = {
         },
         message: `来自初链夺宝游戏的交易申请：等比兑回${value}TGB至TRUE`
       }
-      handles.set(timestamp, (res) => {
-        if (res.ok) {
-          web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
-        } else {
-          reject(new Error(res.message || 'Unknow Error'))
-        }
-      })
-      if (window.originalPostMessage) {
-        window.postMessage(JSON.stringify(payload))
-      } else {
-        reject(new Error('Invalid running environment'))
-      }
+      addHandle(payload, resolve, reject)
     })
   },
   async exchangeIn ({ state }, value) {

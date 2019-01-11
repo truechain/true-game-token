@@ -3,9 +3,11 @@
     <keep-alive>
       <router-view />
     </keep-alive>
-    <div v-if="$route.path !== '/'" class="return">
-      <router-link to="/">返 回</router-link>
-    </div>
+    <transition name="fly-up">
+      <div v-if="$route.path !== '/'" class="return">
+        <router-link to="/">返回首页</router-link>
+      </div>
+    </transition>
   </div>
 </template>
 
@@ -64,4 +66,9 @@ export default {
     text-align center
     background-color #0071bc
     color #fff
+
+.fly-up-leave-active, .fly-up-enter-active
+  transition transform .4s
+.fly-up-leave-to, .fly-up-enter
+  transform translateY(100%)
 </style>
