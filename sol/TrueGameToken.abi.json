@@ -20,6 +20,9 @@
   }, {
     "name": "txHash",
     "type": "bytes32[]"
+  }, {
+    "name": "time",
+    "type": "uint256[]"
   }],
   "payable": false,
   "stateMutability": "view",
@@ -292,6 +295,9 @@
   }, {
     "name": "txHash",
     "type": "bytes32[]"
+  }, {
+    "name": "time",
+    "type": "uint256[]"
   }],
   "payable": false,
   "stateMutability": "view",

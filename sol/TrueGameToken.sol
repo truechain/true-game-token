@@ -98,18 +98,21 @@ contract TrueGameToken {
   function inLogPaged (address _user, uint256 _page, uint256 _size) public view returns (
     uint256 count,
     uint256[] memory value,
-    bytes32[] memory txHash
+    bytes32[] memory txHash,
+    uint256[] memory time
   ) {
     require(_size <= 50);
     count = _usersInLog[_user].length;
     value = new uint256[](_size);
     txHash = new bytes32[](_size);
+    time = new uint256[](_size);
     bytes32[] storage usersLog = _usersInLog[_user];
     uint256 start = _page * _size;
     for (uint256 i = start; i < usersLog.length; i++) {
       Log storage log = _inLog[usersLog[i]];
       value[i - start] = log.value;
       txHash[i - start] = log.txHash;
+      time[i - start] = log.time;
     }
   }
   
@@ -119,18 +122,21 @@ contract TrueGameToken {
   function outLogPaged (address _user, uint256 _page, uint256 _size) public view returns (
     uint256 count,
     uint256[] memory value,
-    bytes32[] memory txHash
+    bytes32[] memory txHash,
+    uint256[] memory time
   ) {
     require(_size <= 50);
     count = _usersOutLog[_user].length;
     value = new uint256[](_size);
     txHash = new bytes32[](_size);
+    time = new uint256[](_size);
     uint256[] storage usersLog = _usersOutLog[_user];
     uint256 start = _page * _size;
     for (uint256 i = start; i < usersLog.length; i++) {
       Log storage log = _outLog[usersLog[i]];
       value[i - start] = log.value;
       txHash[i - start] = log.txHash;
+      time[i - start] = log.time;
     }
   }
 

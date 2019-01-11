@@ -216,6 +216,27 @@ const actions = {
         return records
       })
   },
+  async getExchangeRecords ({ state }, {
+    toGetInRecord,
+    page
+  }) {
+    if (state.address === '---') {
+      return []
+    }
+    const method = toGetInRecord ? TGToken.methods.inLogPaged : TGToken.methods.outLogPaged
+    page = Math.max(0, Number(page))
+    return method(state.address, page, 10).call().then(res => {
+      const records = []
+      for (let i = 0; i < res.count; i++) {
+        records.push({
+          value: web3.utils.fromWei(String(res.value[i]), 'ether'),
+          txHash: res.txHash[i],
+          time: new Date(Number(res.time[i]) * 1000)
+        })
+      }
+      return records
+    })
+  },
   async bet ({ state }, count) {
     count = Math.round(Math.max(1, Math.min(100, Number(count))))
     const chainId = await web3.eth.net.getId()

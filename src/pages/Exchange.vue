@@ -14,6 +14,9 @@
         <span>{{TGBBalance}} TGB</span>
       </p>
     </div>
+    <div class="details">
+      <router-link to="/details">充提明细</router-link>
+    </div>
     <div class="exchange">
       <div class="ex-dire">
         <div class="ex-type" :class="{
@@ -169,6 +172,10 @@ export default {
       overflow hidden
     span:first-child
       flex 0 0 70px
+.details
+  margin 14px 16px
+  font-size 14px
+  text-align right
 .exchange
   margin 14px 16px
   padding 14px

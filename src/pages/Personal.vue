@@ -68,7 +68,7 @@ export default {
       this.updateRecords()
     }
   },
-  created () {
+  mounted () {
     this.updateRecords()
   },
   methods: {
