@@ -14,7 +14,7 @@
       </p>
       <ul>
         <li v-for="(item, index) in friends" :key="index">
-          <span>{{item.friend}}</span>
+          <span>{{item.friend.substr(0, 10)}}...{{item.friend.substr(34, 8)}}</span>
           <span>{{item.time.toLocaleDateString() + ' ' + item.time.toTimeString().substr(0, 5)}}</span>
         </li>
       </ul>

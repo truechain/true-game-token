@@ -1,7 +1,7 @@
 <template>
   <div>
     <div class="balance">
-      <span>{{address}}</span>
+      <span>{{address.substr(0, 10)}}...{{address.substr(34, 8)}}</span>
       <span>{{trueBalance}} TRUE</span>
     </div>
     <div class="tg-balance">
@@ -102,6 +102,11 @@ export default {
   font-size 12px
   display flex
   justify-content space-between
+  span
+    white-space nowrap
+  span:first-child
+    text-overflow ellipsis
+    overflow hidden
 .tg-balance
   margin 0 16px
   padding 14px 14px 10px

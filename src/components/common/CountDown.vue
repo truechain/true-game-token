@@ -105,13 +105,13 @@ export default {
     color #101010
     margin 6px 0
     span
-      width 38px
+      width 36px
       height 50px
       box-sizing border-box
       border solid 1px #bbb
       border-radius 6px
       line-height 48px
-      margin 0 4px
+      margin 0 3px
     div
       font-size 32px
       line-height 44px

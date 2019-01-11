@@ -87,7 +87,7 @@ export default {
   text-align center
   font-size 14px
   .price
-    flex 1 1 auto
+    flex 1 0 80px
     border solid 1px #bbb
     padding 4px
     line-height 20px
@@ -97,7 +97,7 @@ export default {
     font-weight 500
     margin 0 10px
   input
-    flex 2 1 auto
+    flex 1 1 80px
     border solid 1px #bbb
     padding 0 .8em
     text-align start
