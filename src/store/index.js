@@ -459,8 +459,7 @@ const actions = {
         } else {
           resolve(3)
         }
-      }).catch(err => {
-        alert(err.message || err)
+      }).catch(() => {
         return 4
       })
     }

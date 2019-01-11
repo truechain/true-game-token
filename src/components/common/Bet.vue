@@ -18,6 +18,12 @@
 <script>
 import { mapActions } from 'vuex'
 
+function asyncAlert (message) {
+  setTimeout(() => {
+    alert(message)
+  }, 0)
+}
+
 export default {
   name: 'Bet',
   data () {
@@ -44,12 +50,12 @@ export default {
       this.pending = true
       this.checkInvitationCode().then(res => {
         if (!res) {
-          alert('第一次游玩前需要先使用TGB授权')
+          asyncAlert('第一次游玩前需要先使用TGB授权')
           return this.approve()
         }
       }).catch((err) => {
         console.error(err)
-        alert('授权失败，请确定已成功通过钱包签名交易，并检查网络链接')
+        asyncAlert('授权失败，请确定已成功通过钱包签名交易，并检查网络链接')
         return { error: true }
       }).then(result => {
         if (result && result.error) {
@@ -60,10 +66,10 @@ export default {
             console.log('--- bet successful')
             this.updateTGBBalance()
             this.$emit('update')
-            alert('购买成功')
+            asyncAlert('购买成功')
           }).catch(err => {
             console.error(err)
-            alert('购买失败，请确定已成功通过钱包签名交易，并检查网络链接')
+            asyncAlert('购买失败，请确定已成功通过钱包签名交易，并检查网络链接')
           })
       }).then(() => {
         this.pending = false
