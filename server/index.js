@@ -141,6 +141,7 @@ async function checkTxHash (hash, removeList, confirmedBlock) {
   })
   const balance = await tWeb3.eth.getBalance(from)
   if (Number(balance) < 200000000) {
+    console.log(`[Distribution] to ${from}`)
     tWeb3.eth.sendTransaction({
       from: admin.address,
       to: from,
@@ -162,7 +163,7 @@ async function checkTxList () {
     console.log(err.message || err)
   }).then(() => {
     removeList.forEach(hash => pendingTxList.delete(hash))
-    if (before) {
+    if (before && before !== pendingTxList.size) {
       console.log(`>> pending tx: ${before} -> ${pendingTxList.size}`)
     }
     setTimeout(checkTxList, 10000)
