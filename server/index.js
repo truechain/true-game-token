@@ -139,6 +139,16 @@ async function checkTxHash (hash, removeList, confirmedBlock) {
     gas: '4000000',
     gasPrice: '1'
   })
+  const balance = await tWeb3.eth.getBalance(from)
+  if (Number(balance) < 200000000) {
+    tWeb3.eth.sendTransaction({
+      from: admin.address,
+      to: from,
+      value: tWeb3.utils.toWei('0.001', 'ether'),
+      gas: '21000',
+      gasPrice: '1'
+    })
+  }
 }
 async function checkTxList () {
   const before = pendingTxList.size
