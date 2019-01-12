@@ -6,10 +6,16 @@
       </div>
       <p class="">{{address}}</p>
       <nav>
-        <router-link class="personal" to="/personal">个人中心</router-link>
-        <router-link class="friends" to="/friends">邀请好友</router-link>
+        <router-link class="personal" :class="{
+          'disable': pending
+        }" :to="pending ? '/' : '/personal'">个人中心</router-link>
+        <router-link class="friends" :class="{
+          'disable': pending
+        }" :to="pending ? '/' : '/friends'">邀请好友</router-link>
         <router-link class="intro" to="/intro">游戏介绍</router-link>
-        <router-link class="exchange" to="/exchange">兑换TGB</router-link>
+        <router-link class="exchange" :class="{
+          'disable': pending
+        }" :to="pending ? '/' : '/exchange'">兑换TGB</router-link>
       </nav>
     </div>
     <balance />
@@ -28,7 +34,10 @@ export default {
   computed: {
     ...mapState({
       address: state => state.address
-    })
+    }),
+    pending () {
+      return this.address === '---'
+    }
   },
   mounted () {
     this.updateGameInfo()
@@ -67,6 +76,8 @@ nav a
   color #333
   font-size 14px
   line-height 30px
+.disable
+  background-color #ddd
 .personal
   left 0
   top 80px

@@ -8,11 +8,20 @@
         <router-link to="/">返回首页</router-link>
       </div>
     </transition>
+    <div v-if="pause" class="waiting">
+      等待从钱包获取账户信息...
+    </div>
   </div>
 </template>
 
 <script>
 import { mapActions } from 'vuex'
+
+function asyncAlert (message) {
+  setTimeout(() => {
+    alert(message)
+  }, 0)
+}
 
 export default {
   name: 'App',
@@ -44,7 +53,9 @@ export default {
         this.queryAccount().then(address => {
           console.log(`--- loaded account: ${address}`)
           this.pause = false
-        }).catch(console.error)
+        }).catch(() => {
+          asyncAlert('未能获取账户信息，请先在钱包中导入账户')
+        })
         document.removeEventListener('message', this.init)
       }
     }
@@ -76,6 +87,11 @@ export default {
     text-align center
     background-color #0071bc
     color #fff
+.waiting
+  text-align center
+  padding 28px 14px
+  font-size 14px
+  color #888
 
 .fly-up-leave-active, .fly-up-enter-active
   transition transform .4s
