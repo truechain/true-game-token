@@ -67,7 +67,6 @@ export default {
     }
   },
   mounted () {
-    swal('购买成功', '已购买份号码', 'success')
     this.update()
   },
   methods: {

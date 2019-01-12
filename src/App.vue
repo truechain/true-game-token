@@ -49,7 +49,7 @@ export default {
           console.log(`--- loaded account: ${address}`)
           this.pause = false
         }).catch(() => {
-          swal('错误', '未能获取账户信息，请先在钱包中导入账户', 'error')
+          swal('提示', '未能获取账户信息，请先在钱包中导入账户后打开', 'warning')
         })
         document.removeEventListener('message', this.init)
       }
