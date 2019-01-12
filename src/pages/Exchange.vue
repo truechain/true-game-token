@@ -58,14 +58,9 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
+import swal from 'sweetalert'
 
 import iconExchange from '@/assets/exchange.svg.vue'
-
-function asyncAlert (message) {
-  setTimeout(() => {
-    alert(message)
-  }, 0)
-}
 
 export default {
   name: 'Exchange',
@@ -120,22 +115,22 @@ export default {
         if (res.error) {
           switch (res.code) {
             case 1:
-              return asyncAlert('兑换失败，兑换服务未开启')
+              return swal('兑换失败', '兑换服务未开启', 'error')
             case 2:
-              return asyncAlert('兑换失败，未能成功签名交易')
+              return swal('兑换失败', '未能成功签名交易', 'error')
             case 3:
-              return asyncAlert('兑换失败，未能连接到钱包应用')
+              return swal('兑换失败', '未能连接到钱包应用', 'error')
             case 4:
-              return asyncAlert('兑换失败，ETH网络转账交易不成功')
+              return swal('兑换失败', 'ETH网络转账交易不成功', 'error')
             case 5:
-              return asyncAlert('兑换失败，兑换服务拒绝了本次请求。如有疑问请联系管理员。')
+              return swal('兑换失败', '兑换服务拒绝了本次请求。如有疑问请联系管理员', 'error')
             case 6:
-              return asyncAlert('兑换失败，无法连接到兑换服务。您的TRUE转账可能已经成功，如果约20分钟后没有在记录中看到对应的TGB充值记录，请及时联系管理员。')
+              return swal('兑换失败', '无法连接到兑换服务。您的TRUE转账可能已经成功，如果约20分钟后没有在记录中看到对应的TGB充值记录，请及时联系管理员', 'error')
             default:
-              return asyncAlert('兑换失败，未知错误')
+              return swal('兑换失败', '未知错误', 'error')
           }
         } else {
-          asyncAlert('兑换成功，等待TRUE确认到账后会自动为您发放TGB。如果约20分钟后没有在记录中看到对应的TGB充值记录，请及时联系管理员。')
+          swal('兑换成功', '等待TRUE确认到账后会自动为您发放TGB。如果约20分钟后没有在记录中看到对应的TGB充值记录，请及时联系管理员', 'success')
         }
       })
     },
@@ -145,12 +140,12 @@ export default {
       }
       this.exOutLock = true
       this.queryExchangeOut(this.inputValue).then(res => {
-        asyncAlert('兑换成功，等量的TRUE将会自动返还到你的钱包中')
+        swal('兑换成功', '等量的TRUE将会自动返还到你的钱包中', 'success')
       }).catch(err => {
         if (err.code === 1) {
-          asyncAlert('兑换失败，兑换服务未开启')
+          swal('兑换失败', '兑换服务未开启', 'error')
         } else {
-          asyncAlert('兑换失败，请确定已成功通过钱包签名交易，并检查网络链接')
+          swal('兑换失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
         }
       }).then(() => {
         this.exOutLock = false

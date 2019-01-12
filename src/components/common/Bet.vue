@@ -17,12 +17,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-
-function asyncAlert (message) {
-  setTimeout(() => {
-    alert(message)
-  }, 0)
-}
+import swal from 'sweetalert'
 
 export default {
   name: 'Bet',
@@ -50,12 +45,12 @@ export default {
       this.pending = true
       this.getBetRecords().then(res => {
         if (res.length === 0) {
-          asyncAlert('第一次游玩前需要先使用TGB授权')
+          swal('提示', '第一次游玩前需要先使用TGB授权', 'warning')
           return this.approve()
         }
       }).catch((err) => {
         console.error(err)
-        asyncAlert('授权失败，请确定已成功通过钱包签名交易，并检查网络链接')
+        swal('授权失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
         return { error: true }
       }).then(result => {
         if (result && result.error) {
@@ -66,10 +61,10 @@ export default {
             console.log('--- bet successful')
             this.updateTGBBalance()
             this.$emit('update')
-            asyncAlert('购买成功')
+            swal('购买成功', `已购买${this.count}份号码`, 'success')
           }).catch(err => {
             console.error(err)
-            asyncAlert('购买失败，请确定已成功通过钱包签名交易，并检查网络链接')
+            swal('购买失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
           })
       }).then(() => {
         this.pending = false

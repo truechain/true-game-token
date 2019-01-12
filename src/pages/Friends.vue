@@ -42,12 +42,7 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-
-function asyncAlert (message) {
-  setTimeout(() => {
-    alert(message)
-  }, 0)
-}
+import swal from 'sweetalert'
 
 export default {
   name: 'Friends',
@@ -72,6 +67,7 @@ export default {
     }
   },
   mounted () {
+    swal('购买成功', '已购买份号码', 'success')
     this.update()
   },
   methods: {
@@ -96,7 +92,7 @@ export default {
     },
     toSetInviter () {
       if (!/^[\da-fA-F]{8}$/.test(this.inputCode)) {
-        alert('邀请码格式错误')
+        swal('错误', '邀请码格式错误', 'errpr')
         return
       }
       if (this.pending) {
@@ -104,11 +100,11 @@ export default {
       }
       this.pending = true
       this.setInviter(this.inputCode).then(() => {
-        asyncAlert('邀请码设置成功')
+        swal('邀请码设置成功', '', 'success')
         this.update()
       }).catch((err) => {
         console.error(err)
-        asyncAlert('邀请码设置失败，请确定邀请码是自己以外的其他可用邀请码，请确定已成功通过钱包签名交易，并检查网络链接')
+        swal('邀请码设置失败', '请确定邀请码是自己以外的其他可用邀请码，请确定已成功通过钱包签名交易，并检查网络链接', 'error')
       }).then(() => {
         this.pending = false
       })
@@ -119,11 +115,11 @@ export default {
       }
       this.pending = true
       this.genICode().then(() => {
-        asyncAlert('生成成功')
+        swal('邀请码生成成功', '', 'success')
         this.update()
       }).catch((err) => {
         console.error(err)
-        asyncAlert('生成失败，请确定已成功通过钱包签名交易，并检查网络链接')
+        swal('邀请码生成失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
       }).then(() => {
         this.pending = false
       })
