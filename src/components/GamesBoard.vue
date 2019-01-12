@@ -3,7 +3,7 @@
     <h2>{{$t('C.gamesBoard')}}</h2>
     <div class="board">
       <new-game v-if="canCreateNewGame" @update="updateGamesBoard" />
-      <game v-for="index in gamesList" :key="index" :gameIndex="index" />
+      <game v-for="index in gamesList" :key="index" :gameIndex="index" @update="updateGamesBoard" />
       <div v-if="oldest" class="more">上拉加载更多</div>
       <div v-else class="more">已加载全部</div>
     </div>

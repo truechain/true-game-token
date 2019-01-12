@@ -18,6 +18,7 @@ export default {
   name: 'App',
   data () {
     return {
+      sitv: 0,
       pause: true
     }
   },
@@ -27,10 +28,16 @@ export default {
     } else {
       document.addEventListener('message', this.init)
     }
+    this.sitv = setInterval(() => {
+      this.updateTGBBalance()
+      this.updateTTBalance()
+    }, 4000)
   },
   methods: {
     ...mapActions({
-      queryAccount: 'queryAccount'
+      queryAccount: 'queryAccount',
+      updateTGBBalance: 'updateTGBBalance',
+      updateTTBalance: 'updateTTBalance'
     }),
     init (e) {
       if (e.data === 'onload') {
@@ -41,6 +48,9 @@ export default {
         document.removeEventListener('message', this.init)
       }
     }
+  },
+  beforeDestroy () {
+    clearInterval(this.sitv)
   }
 }
 </script>

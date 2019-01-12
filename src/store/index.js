@@ -22,20 +22,6 @@ const admin = config.adminAddress
 const largeNumber = '100000000000000000000000000'
 
 const handles = new Map()
-function addHandle (payload, resolve, reject) {
-  handles.set(payload.timestamp, (res) => {
-    if (res.ok) {
-      web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
-    } else {
-      reject(new Error(res.message || 'Unknow Error'))
-    }
-  })
-  if (window.originalPostMessage) {
-    window.postMessage(JSON.stringify(payload))
-  } else {
-    reject(new Error('Invalid running environment'))
-  }
-}
 document.addEventListener('message', e => {
   let res
   if (e.data) {
@@ -98,6 +84,38 @@ const state = {
   endTime: Infinity
 }
 
+async function signThenSend (tx, from, message) {
+  if (process.env.NODE_ENV === 'development') {
+    const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
+    const { rawTransaction } = await accout.signTransaction(tx)
+    return web3.eth.sendSignedTransaction(rawTransaction)
+  }
+  return new Promise((resolve, reject) => {
+    const timestamp = new Date().getTime()
+    const payload = {
+      timestamp,
+      method: 'get_signedTx',
+      data: {
+        from,
+        tx
+      },
+      message
+    }
+    handles.set(timestamp, (res) => {
+      if (res.ok) {
+        web3.eth.sendSignedTransaction(res.rawTx).then(resolve).catch(reject)
+      } else {
+        reject(new Error(res.message || 'Unknow Error'))
+      }
+    })
+    if (window.originalPostMessage) {
+      window.postMessage(JSON.stringify(payload))
+    } else {
+      reject(new Error('Invalid running environment'))
+    }
+  })
+}
+
 const actions = {
   async updateGameInfo ({ state }) {
     const index = await TTGame.methods.gameIndexNow().call()
@@ -138,6 +156,8 @@ const actions = {
   async updateTGBBalance ({ state }) {
     if (!web3.utils.isAddress(state.address)) {
       state.TGB = '---'
+      state.TGBAward = '---'
+      state.TGBReward = '---'
       return '---'
     }
     return Promise.all([
@@ -181,13 +201,22 @@ const actions = {
   },
   async checkInvitationCode ({ state }) {
     if (!web3.utils.isAddress(state.address)) {
-      state.TT = '---'
-      return '---'
+      return false
     }
     return TTGame.methods.invitationCode(state.address.substr(0, 10))
       .call()
       .then(address => {
         return address !== '0x0000000000000000000000000000000000000000'
+      })
+  },
+  async getInviter ({ state }) {
+    if (!web3.utils.isAddress(state.address)) {
+      return ''
+    }
+    return TTGame.methods.inviterOf(state.address)
+      .call()
+      .then(address => {
+        return address === '0x0000000000000000000000000000000000000000' ? '' : address
       })
   },
   async getGameInfo ({ state }, index) {
@@ -296,24 +325,24 @@ const actions = {
       gasPrice: 1,
       chainId
     }
-    if (process.env.NODE_ENV === 'development') {
-      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
-      const { rawTransaction } = await accout.signTransaction(tx)
-      return web3.eth.sendSignedTransaction(rawTransaction)
+    return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：创建游戏邀请码 (需极低beta TRUE手续费)`)
+  },
+  async setInviter ({ state }, code) {
+    if (state.address === '---') {
+      return []
     }
-    return new Promise((resolve, reject) => {
-      const timestamp = new Date().getTime()
-      const payload = {
-        timestamp,
-        method: 'get_signedTx',
-        data: {
-          from: state.address,
-          tx
-        },
-        message: `来自初链夺宝游戏的交易申请：创建游戏邀请码`
-      }
-      addHandle(payload, resolve, reject)
-    })
+    const chainId = await web3.eth.net.getId()
+    const nonce = await web3.eth.getTransactionCount(state.address)
+    const input = TTGame.methods.setInviter('0x' + code).encodeABI()
+    const tx = {
+      to: TTGame.options.address,
+      input,
+      nonce,
+      gas: 4000000,
+      gasPrice: 1,
+      chainId
+    }
+    return signThenSend(tx, state.address, '来自初链夺宝游戏的交易申请：填写邀请码 (需极低beta TRUE手续费)')
   },
   async approve ({ state }) {
     const chainId = await web3.eth.net.getId()
@@ -327,24 +356,7 @@ const actions = {
       gasPrice: 1,
       chainId
     }
-    if (process.env.NODE_ENV === 'development') {
-      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
-      const { rawTransaction } = await accout.signTransaction(tx)
-      return web3.eth.sendSignedTransaction(rawTransaction)
-    }
-    return new Promise((resolve, reject) => {
-      const timestamp = new Date().getTime()
-      const payload = {
-        timestamp,
-        method: 'get_signedTx',
-        data: {
-          from: state.address,
-          tx
-        },
-        message: `来自初链夺宝游戏的交易申请：授权游戏使用TGB`
-      }
-      addHandle(payload, resolve, reject)
-    })
+    return signThenSend(tx, state.address, '来自初链夺宝游戏的交易申请：授权游戏使用TGB (需极低beta TRUE手续费)')
   },
   async bet ({ state }, count) {
     count = Math.round(Math.max(1, Math.min(100, Number(count))))
@@ -359,29 +371,14 @@ const actions = {
       gasPrice: 1,
       chainId
     }
-    if (process.env.NODE_ENV === 'development') {
-      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
-      const { rawTransaction } = await accout.signTransaction(tx)
-      return web3.eth.sendSignedTransaction(rawTransaction)
-    }
-    return new Promise((resolve, reject) => {
-      const timestamp = new Date().getTime()
-      const payload = {
-        timestamp,
-        method: 'get_signedTx',
-        data: {
-          from: state.address,
-          tx
-        },
-        message: `来自初链夺宝游戏的交易申请：购买${count}份奖券`
-      }
-      addHandle(payload, resolve, reject)
-    })
+    return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：购买${count}份奖券 (需极低beta TRUE手续费)`)
   },
   async exchangeOut ({ state }, value) {
     const res = await axios.get(config.backend).catch(err => { return err })
     if (res.name === 'Error') {
-      throw new Error('No backend service')
+      const err = new Error('No backend service')
+      err.code = 1
+      throw err
     }
     const chainId = await web3.eth.net.getId()
     const nonce = await web3.eth.getTransactionCount(state.address)
@@ -395,24 +392,7 @@ const actions = {
       gasPrice: 1,
       chainId
     }
-    if (process.env.NODE_ENV === 'development') {
-      const accout = web3.eth.accounts.privateKeyToAccount('0xf12cd44cfbcbfe40e0c0b5c80d5e19ed45fe180edd4d2b919e874944c2845bb5')
-      const { rawTransaction } = await accout.signTransaction(tx)
-      return web3.eth.sendSignedTransaction(rawTransaction)
-    }
-    return new Promise((resolve, reject) => {
-      const timestamp = new Date().getTime()
-      const payload = {
-        timestamp,
-        method: 'get_signedTx',
-        data: {
-          from: state.address,
-          tx
-        },
-        message: `来自初链夺宝游戏的交易申请：等比兑回${value}TGB至TRUE`
-      }
-      addHandle(payload, resolve, reject)
-    })
+    return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：等比兑回${value}TGB至TRUE (需极低beta TRUE手续费)`)
   },
   async exchangeIn ({ state }, value) {
     const res = await axios.get(config.backend).catch(err => { return err })
@@ -464,7 +444,7 @@ const actions = {
             from: state.address,
             tx
           },
-          message: `来自初链夺宝游戏的交易申请：等比兑换${value}TRUE至TGB`
+          message: `来自初链夺宝游戏的交易申请：等比兑换${value}TRUE至TGB (需少量ETH手续费)`
         }
         handles.set(timestamp, (res) => {
           if (res.ok) {

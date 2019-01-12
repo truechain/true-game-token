@@ -2,10 +2,21 @@
   <div>
     <div class="my-code">
       <p>我的邀请码</p>
-      <span class="code" v-if="hasICode">{{address.substr(2, 6).toUpperCase()}}</span>
+      <span class="code" v-if="hasICode">{{address.substr(2, 8).toUpperCase()}}</span>
       <span v-else class="gen" :class="{
         'pending': pending
       }" @click="toCreateCode">生成邀请码</span>
+    </div>
+    <div class="inviter" v-if="inviter">
+      <span>我的邀请人:</span>
+      <span>{{inviter.substr(0, 10)}}...{{inviter.substr(34, 8)}}</span>
+    </div>
+    <div class="inviter-set" v-else>
+      <span>输入邀请码</span>
+      <input type="text" v-model="inputCode">
+      <div :class="{
+        'pending': pending
+      }" @click="toSetInviter">确认</div>
     </div>
     <div class="friends">
       <p class="title">
@@ -44,6 +55,8 @@ export default {
     return {
       hasICode: true,
       pending: false,
+      inviter: '',
+      inputCode: '',
       count: 0,
       friends: []
     }
@@ -65,6 +78,8 @@ export default {
     ...mapActions({
       getFriends: 'getFriends',
       genICode: 'genICode',
+      getInviter: 'getInviter',
+      setInviter: 'setInviter',
       checkInvitationCode: 'checkInvitationCode'
     }),
     update () {
@@ -74,6 +89,28 @@ export default {
       this.getFriends().then(res => {
         this.count = res.count
         this.friends = res.records
+      })
+      this.getInviter().then(res => {
+        this.inviter = res
+      })
+    },
+    toSetInviter () {
+      if (!/^[\da-fA-F]{8}$/.test(this.inputCode)) {
+        alert('邀请码格式错误')
+        return
+      }
+      if (this.pending) {
+        return
+      }
+      this.pending = true
+      this.setInviter(this.inputCode).then(() => {
+        asyncAlert('邀请码设置成功')
+        this.update()
+      }).catch((err) => {
+        console.error(err)
+        asyncAlert('邀请码设置失败，请确定邀请码是自己以外的其他可用邀请码，请确定已成功通过钱包签名交易，并检查网络链接')
+      }).then(() => {
+        this.pending = false
       })
     },
     toCreateCode () {
@@ -101,19 +138,49 @@ export default {
   margin 14px 16px
   p
     font-size 14px
+    padding 14px
   .code
     display block
     font-size 36px
     line-height 50px
-    margin 10px 0 20px
+    margin 10px 0 30px
   .gen
     display block
     line-height 36px
-    margin 17px auto 27px
+    margin 17px auto 37px
     background-color #0071bc
     color #fff
     width 120px
     border-radius 18px
+  .pending
+    background-color #999
+.inviter
+  font-size 14px
+  margin 14px 16px
+  padding 0 15px
+  line-height 30px
+  display flex
+  justify-content space-between
+.inviter-set
+  font-size 14px
+  margin 14px 16px
+  padding 0 15px
+  line-height 30px
+  display flex
+  span
+    flex 0 0 80px
+  input
+    flex 1 1 60px
+    border solid 1px #bbb
+    line-height 28px
+    padding 0 .8em
+  div
+    flex 0 0 60px
+    text-align center
+    background-color #0071bc
+    color #fff
+    margin-left 14px
+    border-radius 15px
   .pending
     background-color #999
 .friends

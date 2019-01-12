@@ -61,6 +61,9 @@ export default {
       this.updateLock = true
       this.getGameInfo(this.gameIndex)
         .then(game => {
+          if (!this.end && game.end) {
+            this.$emit('update')
+          }
           this.bettings = game.bettings
           this.end = game.end
           this.timeout = new Date().getTime() > game.endTime

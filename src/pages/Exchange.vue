@@ -146,8 +146,12 @@ export default {
       this.exOutLock = true
       this.queryExchangeOut(this.inputValue).then(res => {
         asyncAlert('兑换成功，等量的TRUE将会自动返还到你的钱包中')
-      }).catch(() => {
-        asyncAlert('兑换成功，请确定已成功通过钱包签名交易，并检查网络链接')
+      }).catch(err => {
+        if (err.code === 1) {
+          asyncAlert('兑换失败，兑换服务未开启')
+        } else {
+          asyncAlert('兑换失败，请确定已成功通过钱包签名交易，并检查网络链接')
+        }
       }).then(() => {
         this.exOutLock = false
       })
