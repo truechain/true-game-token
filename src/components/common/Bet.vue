@@ -45,8 +45,9 @@ export default {
       this.pending = true
       this.getBetRecords().then(res => {
         if (res.length === 0) {
-          swal('提示', '第一次游玩前需要先使用TGB授权', 'warning')
-          return this.approve()
+          return swal('提示', '第一次游玩前需要先使用TGB授权', 'warning').then(() => {
+            return this.approve()
+          })
         }
       }).catch((err) => {
         console.error(err)
