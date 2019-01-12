@@ -16,12 +16,7 @@
 
 <script>
 import { mapActions } from 'vuex'
-
-function asyncAlert (message) {
-  setTimeout(() => {
-    alert(message)
-  }, 0)
-}
+import swal from 'sweetalert'
 
 export default {
   name: 'App',
@@ -54,7 +49,7 @@ export default {
           console.log(`--- loaded account: ${address}`)
           this.pause = false
         }).catch(() => {
-          asyncAlert('未能获取账户信息，请先在钱包中导入账户')
+          swal('错误', '未能获取账户信息，请先在钱包中导入账户', 'error')
         })
         document.removeEventListener('message', this.init)
       }
