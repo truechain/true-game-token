@@ -4,17 +4,21 @@
     <div class="info">
       <div>
         <p>本期已累计</p>
-        <span>{{bettings}} TGB</span>
+        <span :style="{
+          'font-size': bettings >= 10000 ? '16px' : bettings >= 100 ? '20px' : '28px'
+        }">{{bettings}} TGB</span>
       </div>
       <div>
         <p>已经购买</p>
-        <span>{{userBettings}} TGB</span>
+        <span :style="{
+          'font-size': userBettings >= 10000 ? '16px' : userBettings >= 100 ? '20px' : '28px'
+        }">{{userBettings}} TGB</span>
       </div>
     </div>
     <div v-if="endTime">
       <div v-if="timeout" class="end">
         <p>最终赢家</p>
-        <span v-if="winner !== '0x0000000000000000000000000000000000000000'">{{winner}}</span>
+        <span v-if="winner !== '0x0000000000000000000000000000000000000000'">{{winner.substr(0, 10)}}...{{winner.substr(34, 8)}}</span>
         <span v-else>等待开局...</span>
       </div>
       <div v-else>
@@ -64,12 +68,12 @@ export default {
           if (!this.end && game.end) {
             this.$emit('update')
           }
-          this.bettings = game.bettings
+          this.bettings = Number(game.bettings)
           this.end = game.end
           this.timeout = new Date().getTime() > game.endTime
           this.endTime = game.endTime
           this.index = game.index
-          this.userBettings = game.userBettings
+          this.userBettings = Number(game.userBettings)
           this.winner = game.winner
         }).catch(console.error).then(() => {
           this.updateLock = false
@@ -96,6 +100,8 @@ export default {
   border solid 1px #bbb
   border-radius 10px
   min-height 200px
+  width calc(100vw - 32px)
+  box-sizing border-box
   .title
     color #101010
     line-height 42px

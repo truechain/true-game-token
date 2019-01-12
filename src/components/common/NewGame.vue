@@ -34,6 +34,8 @@ export default {
   padding 0 14px 14px
   border solid 1px #BBB
   border-radius 10px
+  width calc(100vw - 32px)
+  box-sizing border-box
   .title
     color #101010
     line-height 42px

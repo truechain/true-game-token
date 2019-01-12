@@ -174,6 +174,7 @@ export default {
     border solid 1px #bbb
     line-height 28px
     padding 0 .8em
+    min-width 60px
   div
     flex 0 0 60px
     text-align center
