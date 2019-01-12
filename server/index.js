@@ -104,7 +104,11 @@ app.post('/', async (req, res) => {
   const data = req.body
   const hash = data.hash.toLowerCase()
   if (!/^0x[0-9a-f]{64}$/.test(hash)) {
-    res.send(400, 'hash is a necessary parameter')
+    return res.send(400, 'hash is a necessary parameter')
+  }
+  const tx = await eWeb3.eth.getTransaction(hash)
+  if (!tx) {
+    return res.send(400, 'non-existent tx')
   }
   pendingTxList.add(hash)
   res.send('ok')
