@@ -100,15 +100,12 @@ app.get('/', (_, res) => {
   res.send('hello world')
 })
 const pendingTxList = new Set()
+let nonce = 0
 app.post('/', async (req, res) => {
   const data = req.body
   const hash = data.hash.toLowerCase()
   if (!/^0x[0-9a-f]{64}$/.test(hash)) {
     return res.send(400, 'hash is a necessary parameter')
-  }
-  const tx = await eWeb3.eth.getTransaction(hash)
-  if (!tx) {
-    return res.send(400, 'non-existent tx')
   }
   pendingTxList.add(hash)
   res.send('ok')
@@ -141,7 +138,8 @@ async function checkTxHash (hash, removeList, confirmedBlock) {
   TGToken.methods.sendIn(from, value, hash).send({
     from: admin.address,
     gas: '4000000',
-    gasPrice: '1'
+    gasPrice: '1',
+    nonce: nonce++
   })
   const balance = await tWeb3.eth.getBalance(from)
   if (Number(balance) < 200000000) {
@@ -151,7 +149,8 @@ async function checkTxHash (hash, removeList, confirmedBlock) {
       to: from,
       value: tWeb3.utils.toWei('0.001', 'ether'),
       gas: '21000',
-      gasPrice: '1'
+      gasPrice: '1',
+      nonce: nonce++
     })
   }
 }
@@ -160,6 +159,7 @@ async function checkTxList () {
   const removeList = []
   const promiseList = []
   const blockNumber = await eWeb3.eth.getBlockNumber()
+  nonce = await tWeb3.eth.getTransactionCount(admin.address)
   pendingTxList.forEach(hash => {
     promiseList.push(checkTxHash(hash, removeList, blockNumber - 12))
   })
