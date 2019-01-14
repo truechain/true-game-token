@@ -42,7 +42,8 @@
       gas: 21000,
       gasPrice: 1,
       chainId: 123
-    }
+    },
+    message: '交易的内容说明，会展示给用户'
   }
 }
 ```
@@ -58,4 +59,45 @@
     rawTx: '0x123456...'
   }
 }
+```
+
+## 例子
+
+### 初始化
+
+在钱包环境中必须等待加载完成才可以使用`postMessage`方法通信，在加载完成时会收到`onload`信息，应当在接收到消息后初始化所有通信事件。
+
+```js
+document.addEventListener('message', (e) {
+  if (e.data === 'onload') {
+    init()
+  }
+})
+```
+
+### 获取当前使用账户
+
+```js
+// 发送请求
+const payload = {
+  timestamp: new Date().getTime(),
+  method: 'get_account'
+}
+window.postMessage(JSON.stringify(payload))
+
+// 监听返回信息
+document.addEventListener('message', e => {
+  let res
+  if (e.data) {
+    try {
+      res = JSON.parse(e.data)
+    } catch (err) {}
+  }
+  if (!res) {
+    return
+  }
+  if (res.timestamp === payload.timestamp) {
+    console.log(res.data.address)
+  }
+})
 ```
