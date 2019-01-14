@@ -80,6 +80,7 @@ const state = {
   TGBBalance: '0',
   TT: '---',
   TTBalance: '0',
+  ready: true,
   gameIndex: -1,
   endTime: Infinity
 }
@@ -138,10 +139,25 @@ const actions = {
       }
       handles.set(timestamp, (res) => {
         if (res.ok) {
-          state.address = res.address
+          const address = res.address
+          state.address = address
           dispatch('updateTGBBalance')
           dispatch('updateTTBalance')
-          resolve(res.address)
+          web3.eth.getBalance(address).then(balance => {
+            if (Number(balance) < 200000000) {
+              state.ready = false
+              axios.post(config.backend + '/query', {
+                address
+              }).then(res => {
+                if (res.data === 'ok') {
+                  state.ready = true
+                }
+              })
+            } else {
+              state.ready = true
+            }
+          })
+          resolve(address)
         } else {
           reject(new Error(res.message || 'Unknow Error'))
         }
@@ -374,7 +390,7 @@ const actions = {
     return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：购买${count}份奖券 (需极低beta TRUE手续费)`)
   },
   async exchangeOut ({ state }, value) {
-    const res = await axios.get(config.backend).catch(err => { return err })
+    const res = await axios.get(config.backend + '/').catch(err => { return err })
     if (res.name === 'Error') {
       const err = new Error('No backend service')
       err.code = 1
@@ -395,7 +411,7 @@ const actions = {
     return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：等比兑回${value}TGB至TRUE (需极低beta TRUE手续费)`)
   },
   async exchangeIn ({ state }, value) {
-    const res = await axios.get(config.backend).catch(err => { return err })
+    const res = await axios.get(config.backend + '/').catch(err => { return err })
     if (res.name === 'Error') {
       return {
         error: true,
@@ -419,7 +435,7 @@ const actions = {
       const { rawTransaction } = await accout.signTransaction(tx)
       return new Promise((resolve, reject) => {
         eWeb3.eth.sendSignedTransaction(rawTransaction).on('transactionHash', hash => {
-          axios.post(config.backend, {
+          axios.post(config.backend + '/', {
             hash
           }).then(res => {
             if (res.data === 'ok') {
@@ -449,7 +465,7 @@ const actions = {
         handles.set(timestamp, (res) => {
           if (res.ok) {
             eWeb3.eth.sendSignedTransaction(res.rawTx).on('transactionHash', hash => {
-              axios.post(config.backend, {
+              axios.post(config.backend + '/', {
                 hash
               }).then(res => {
                 if (res.data === 'ok') {

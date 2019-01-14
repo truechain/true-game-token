@@ -33,6 +33,8 @@ contract TrueGameToken {
   Log[] private _outLog;
   mapping (address => uint256[]) private _usersOutLog;
 
+  mapping (address => bool) private _whitelist;
+
   event Transfer(address indexed _from, address indexed _to, uint256 _value);
   event Approval(address indexed _owner, address indexed _spender, uint256 _value);
   event SendOut(uint256 indexed _logID, address indexed _owner, uint256 _value);
@@ -60,6 +62,14 @@ contract TrueGameToken {
       time: now
     });
     _usersInLog[_to].push(_txHash);
+  }
+
+  function setWhitelist (address _addr, bool _isInWhitelist) public {
+    require(msg.sender == founder);
+    _whitelist[_addr] = _isInWhitelist;
+  }
+  function isInWhitelist (address _addr) public view returns (bool) {
+    return _whitelist[_addr];
   }
 
   function sendOut(uint256 _value) public {
@@ -157,9 +167,12 @@ contract TrueGameToken {
   }
 
   function transferFrom(address _from, address _to, uint256 _value) public returns (bool success) {
-    require(_balances[_from] >= _value && _allowed[_from][msg.sender] >= _value);
+    require(_balances[_from] >= _value);
+    if (!_whitelist[msg.sender]) {
+      require(_allowed[_from][msg.sender] >= _value);
+      _allowed[_from][msg.sender] -= _value;
+    }
     _balances[_from] -= _value;
-    _allowed[_from][msg.sender] -= _value;
     _balances[_to] = _balances[_to].add(_value);
     emit Transfer(_from, _to, _value);
     return true;

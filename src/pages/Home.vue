@@ -19,6 +19,9 @@
       </nav>
     </div>
     <balance />
+    <div v-if="!ready" class="notice">
+      免费申请Beta TRUE（手续费）中...
+    </div>
     <games-board v-if="address !== '---'" />
   </div>
 </template>
@@ -33,7 +36,8 @@ export default {
   name: 'Home',
   computed: {
     ...mapState({
-      address: state => state.address
+      address: state => state.address,
+      ready: state => state.ready
     }),
     pending () {
       return this.address === '---'
@@ -98,4 +102,11 @@ nav a
   top 130px
   border-radius 6px 0 0 6px
   padding 0 6px 0 10px
+
+.notice
+  font-size 14px
+  text-align center
+  color #888
+  line-height 40px
+  background-color #e7eeff
 </style>

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tt-personal">
     <div class="balance">
       <span>{{address.substr(0, 10)}}...{{address.substr(34, 8)}}</span>
       <span>{{trueBalance}} TRUE</span>
@@ -97,6 +97,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.tt-personal
+  margin-bottom 100px
 .balance
   margin 14px 16px
   font-size 12px

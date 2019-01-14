@@ -110,6 +110,31 @@ app.post('/', async (req, res) => {
   pendingTxList.add(hash)
   res.send('ok')
 })
+app.post('/query', async (req, res) => {
+  const data = req.body
+  const address = data.address
+  if (!tWeb3.utils.isAddress(address)) {
+    return res.send(400, 'address is a necessary parameter')
+  }
+  const latest = await tWeb3.eth.getTransactionCount(admin.address)
+  nonce = Math.max(latest, nonce)
+  const balance = await tWeb3.eth.getBalance(address)
+  if (Number(balance) < 200000000) {
+    console.log(`[Distribution] to ${address}`)
+    tWeb3.eth.sendTransaction({
+      from: admin.address,
+      to: address,
+      value: tWeb3.utils.toWei('0.001', 'ether'),
+      gas: '21000',
+      gasPrice: '1',
+      nonce: nonce++
+    }).then(() => {
+      res.send('ok')
+    })
+  } else {
+    res.send('ok')
+  }
+})
 
 app.listen(config.port)
 
@@ -159,7 +184,8 @@ async function checkTxList () {
   const removeList = []
   const promiseList = []
   const blockNumber = await eWeb3.eth.getBlockNumber()
-  nonce = await tWeb3.eth.getTransactionCount(admin.address)
+  const latest = await tWeb3.eth.getTransactionCount(admin.address)
+  nonce = Math.max(latest, nonce)
   pendingTxList.forEach(hash => {
     promiseList.push(checkTxHash(hash, removeList, blockNumber - 12))
   })

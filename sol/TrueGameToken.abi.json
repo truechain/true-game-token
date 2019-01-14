@@ -57,6 +57,20 @@
   "type": "function"
 }, {
   "constant": true,
+  "inputs": [{
+    "name": "_addr",
+    "type": "address"
+  }],
+  "name": "isInWhitelist",
+  "outputs": [{
+    "name": "",
+    "type": "bool"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
   "inputs": [],
   "name": "totalSupply",
   "outputs": [{
@@ -129,6 +143,20 @@
   }],
   "payable": false,
   "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{
+    "name": "_addr",
+    "type": "address"
+  }, {
+    "name": "_isInWhitelist",
+    "type": "bool"
+  }],
+  "name": "setWhitelist",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
   "type": "function"
 }, {
   "constant": true,

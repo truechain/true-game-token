@@ -31,7 +31,7 @@ export default {
     ...mapActions({
       approve: 'approve',
       betOnChain: 'bet',
-      getBetRecords: 'getBetRecords',
+      // getBetRecords: 'getBetRecords',
       updateTGBBalance: 'updateTGBBalance'
     }),
     checkCount () {
@@ -43,33 +43,45 @@ export default {
         return
       }
       this.pending = true
-      this.getBetRecords().then(res => {
-        if (res.length === 0) {
-          return swal('提示', '第一次游玩前需要先使用TGB授权', 'warning').then(() => {
-            return this.approve()
-          })
-        }
-      }).catch((err) => {
-        console.error(err)
-        swal('授权失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-        return { error: true }
-      }).then(result => {
-        if (result && result.error) {
-          return
-        }
-        return this.betOnChain(this.count)
-          .then(() => {
-            console.log('--- bet successful')
-            this.updateTGBBalance()
-            this.$emit('update')
-            swal('购买成功', `已购买${this.count}份号码`, 'success')
-          }).catch(err => {
-            console.error(err)
-            swal('购买失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-          })
-      }).then(() => {
-        this.pending = false
-      })
+      // this.getBetRecords().then(res => {
+      //   if (res.length === 0) {
+      //     return swal('提示', '第一次游玩前需要先使用TGB授权', 'warning').then(() => {
+      //       return this.approve()
+      //     })
+      //   }
+      // }).catch((err) => {
+      //   console.error(err)
+      //   swal('授权失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
+      //   return { error: true }
+      // }).then(result => {
+      //   if (result && result.error) {
+      //     return
+      //   }
+      //   return this.betOnChain(this.count)
+      //     .then(() => {
+      //       console.log('--- bet successful')
+      //       this.updateTGBBalance()
+      //       this.$emit('update')
+      //       swal('购买成功', `已购买${this.count}份号码`, 'success')
+      //     }).catch(err => {
+      //       console.error(err)
+      //       swal('购买失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
+      //     })
+      // }).then(() => {
+      //   this.pending = false
+      // })
+      this.betOnChain(this.count)
+        .then(() => {
+          console.log('--- bet successful')
+          this.updateTGBBalance()
+          this.$emit('update')
+          swal('购买成功', `已购买${this.count}份号码`, 'success')
+        }).catch(err => {
+          console.error(err)
+          swal('购买失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
+        }).then(() => {
+          this.pending = false
+        })
     }
   }
 }

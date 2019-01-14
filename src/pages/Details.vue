@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tt-details">
     <div class="details-nav">
       <div :class="{ 'focus': focusMenu === 0 }" @click="toggleMenu(0)">兑入</div>
       <div :class="{ 'focus': focusMenu === 1 }" @click="toggleMenu(1)">兑出</div>
@@ -67,6 +67,8 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.tt-details
+  margin-bottom 100px
 .details-nav
   margin 14px 16px
   border solid 1px #bbb
