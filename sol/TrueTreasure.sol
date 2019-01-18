@@ -28,7 +28,7 @@ contract TrueTreasure {
 
   address payable founder;
   TrueGameToken public TGB;
-  uint256 public interval = 1 minutes;
+  uint256 public interval = 1 hours;
   uint256 public gameIndexNow;
   mapping (uint256 => uint256) public endTime;
 
