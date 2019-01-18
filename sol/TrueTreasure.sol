@@ -20,16 +20,21 @@ contract TrueTreasure {
     uint256 number;
     uint256 time;
   }
+  struct AwardRecord {
+    address winner;
+    uint256 number;
+    uint256 value;
+  }
 
   address payable founder;
   TrueGameToken public TGB;
-  uint256 public interval = 1 hours;
+  uint256 public interval = 1 minutes;
   uint256 public gameIndexNow;
   mapping (uint256 => uint256) public endTime;
 
   bytes32 private _randomSeed;
   mapping (uint256 => bytes32) public finalRandomSeed;
-  mapping (uint256 => address) public winner;
+  mapping (uint256 => AwardRecord) public winner;
 
   mapping (address => address) public inviterOf;
   mapping (address => address[]) private _friends;
@@ -69,7 +74,27 @@ contract TrueTreasure {
   ) {
     gameEndTime = endTime[_index];
     gameBettings = totalBettings(_index);
-    gameWinner = winner[_index];
+    gameWinner = winner[_index].winner;
+  }
+
+  function getWinnerPaged (uint256 _page) public view returns (
+    uint256 top,
+    address[] memory winners,
+    uint256[] memory numbers,
+    uint256[] memory values
+  ) {
+    winners = new address[](10);
+    numbers = new uint256[](10);
+    values = new uint256[](10);
+    uint256 offset = _page * 10;
+    top = gameIndexNow - 1;
+    for (uint256 i = 0; i + offset < gameIndexNow; i++) {
+      uint256 index = gameIndexNow - offset - i - 1;
+      AwardRecord storage rec = winner[index];
+      winners[i] = rec.winner;
+      numbers[i] = rec.number;
+      values[i] = rec.value;
+    }
   }
 
   function setInviter (address _user, bytes4 _icode) public {
@@ -104,7 +129,8 @@ contract TrueTreasure {
     startNumbers = new uint256[](count);
     endNumbers = new uint256[](count);
     times = new uint256[](count);
-    for (uint256 i = 0; i < count; i++) {
+    uint256 max = count > 50 ? 50 : count;
+    for (uint256 i = 0; i < max; i++) {
       BetRecord storage record = _betRecords[_user][count - 1 - i];
       values[i] = record.value;
       indexs[i] = record.index;
@@ -126,7 +152,8 @@ contract TrueTreasure {
     indexs = new uint256[](count);
     numbers = new uint256[](count);
     times = new uint256[](count);
-    for (uint256 i = 0; i < count; i++) {
+    uint256 max = count > 50 ? 50 : count;
+    for (uint256 i = 0; i < max; i++) {
       IncomeRecord storage record = _incomeRecords[_user][count - 1 - i];
       values[i] = record.value;
       indexs[i] = record.index;
@@ -180,12 +207,16 @@ contract TrueTreasure {
   }
 
   function _autoAward (uint256 _index) private {
-    if (winner[_index] == address(0) && finalRandomSeed[_index] != bytes32(0)) {
+    if (winner[_index].winner == address(0) && finalRandomSeed[_index] != bytes32(0)) {
       uint256 total = totalBettings(_index);
       uint256 winnerID =  uint256(finalRandomSeed[_index]) % total;
       address winnerAdr = gameboard[_index][winnerID];
-      winner[_index] = winnerAdr;
       uint256 value = total * 800 finney;
+      winner[_index] = AwardRecord({
+        winner: winnerAdr,
+        number: winnerID,
+        value: value
+      });
       totalAward[winnerAdr] += value;
       _incomeRecords[winnerAdr].push(IncomeRecord({
         value: value,

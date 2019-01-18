@@ -1,5 +1,28 @@
 [{
   "constant": true,
+  "inputs": [{
+    "name": "_page",
+    "type": "uint256"
+  }],
+  "name": "getWinnerPaged",
+  "outputs": [{
+    "name": "top",
+    "type": "uint256"
+  }, {
+    "name": "winners",
+    "type": "address[]"
+  }, {
+    "name": "numbers",
+    "type": "uint256[]"
+  }, {
+    "name": "values",
+    "type": "uint256[]"
+  }],
+  "payable": false,
+  "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": true,
   "inputs": [],
   "name": "gameIndexNow",
   "outputs": [{
@@ -17,8 +40,14 @@
   }],
   "name": "winner",
   "outputs": [{
-    "name": "",
+    "name": "winner",
     "type": "address"
+  }, {
+    "name": "number",
+    "type": "uint256"
+  }, {
+    "name": "value",
+    "type": "uint256"
   }],
   "payable": false,
   "stateMutability": "view",
