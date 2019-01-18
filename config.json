@@ -1,7 +1,7 @@
 {
   "ethTrueAddress": "0x2792d677B7Ba6B7072bd2293F64BC0C1CDe23ac1",
   "betaTGTAddress": "0xbbBC3739B30E55Bd8594963faE41D9D795b2a77b",
-  "betaGameAddress": "0xD1b5a139A491bD1E26eE657bDaf36DB460D77155",
+  "betaGameAddress": "0x77c5Cf4c0480a849BDE52a951994875E29C7afc1",
   "adminAddress": "0x1782730ce1234f0a5850b750634b1970f9f4a89f",
-  "backend": "http://192.168.46.16:3000"
+  "backend": "http://127.0.0.1:3000"
 }

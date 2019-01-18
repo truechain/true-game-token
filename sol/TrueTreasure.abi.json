@@ -26,6 +26,17 @@
 }, {
   "constant": false,
   "inputs": [{
+    "name": "_user",
+    "type": "address"
+  }],
+  "name": "genCode",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{
     "name": "_interval",
     "type": "uint256"
   }],
@@ -208,17 +219,6 @@
   "stateMutability": "view",
   "type": "function"
 }, {
-  "constant": false,
-  "inputs": [{
-    "name": "_icode",
-    "type": "bytes4"
-  }],
-  "name": "setInviter",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
   "constant": true,
   "inputs": [],
   "name": "TGB",
@@ -272,14 +272,6 @@
   "stateMutability": "view",
   "type": "function"
 }, {
-  "constant": false,
-  "inputs": [],
-  "name": "genICode",
-  "outputs": [],
-  "payable": false,
-  "stateMutability": "nonpayable",
-  "type": "function"
-}, {
   "constant": true,
   "inputs": [{
     "name": "",
@@ -312,6 +304,20 @@
   }],
   "payable": false,
   "stateMutability": "view",
+  "type": "function"
+}, {
+  "constant": false,
+  "inputs": [{
+    "name": "_user",
+    "type": "address"
+  }, {
+    "name": "_icode",
+    "type": "bytes4"
+  }],
+  "name": "setInviter",
+  "outputs": [],
+  "payable": false,
+  "stateMutability": "nonpayable",
   "type": "function"
 }, {
   "inputs": [{

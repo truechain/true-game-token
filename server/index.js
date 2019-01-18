@@ -4,6 +4,7 @@ const bodyParser = require('body-parser')
 
 const trueTokenABI = require('../sol/TrueToken.abi.json')
 const TGTokenABI = require('../sol/TrueGameToken.abi.json')
+const TTreasureABI = require('../sol/TrueTreasure.abi.json')
 
 const config = require('./config.json')
 const pubConfig = require('../config.json')
@@ -14,11 +15,13 @@ const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
 // const ethTrueAddress = '0xa4d17ab1ee0efdd23edc2869e7ba96b89eecf9ab'
 const ethTrueAddress = pubConfig.ethTrueAddress.toLowerCase()
 const betaTGTAddress = pubConfig.betaTGTAddress
+const betaGameAddress = pubConfig.betaGameAddress
 const privKey = config.privKey
 const topic = tWeb3.eth.abi.encodeEventSignature('SendOut(uint256,address,uint256)')
 
 const trueToken = new eWeb3.eth.Contract(trueTokenABI, ethTrueAddress)
 const TGToken = new tWeb3.eth.Contract(TGTokenABI, betaTGTAddress)
+const TTGame = new tWeb3.eth.Contract(TTreasureABI, betaGameAddress)
 const admin = eWeb3.eth.accounts.privateKeyToAccount(privKey)
 eWeb3.eth.accounts.wallet.add(admin)
 tWeb3.eth.accounts.wallet.add(admin)
@@ -29,6 +32,7 @@ trueToken.methods.name().call().then(name => {
 
 let sub
 
+let eNonce = 0
 function init () {
   console.log('...link to ws service')
   tWeb3.setProvider('wss://api.truescan.net/ws')
@@ -60,7 +64,11 @@ function init () {
     setTimeout(init, 2000)
   }
 }
-init()
+
+eWeb3.eth.getTransactionCount(admin.address).then(latest => {
+  eNonce = Math.max(latest, eNonce)
+  init()
+})
 
 setInterval(() => {
   tWeb3.eth.net.getId().catch(() => {
@@ -72,12 +80,14 @@ function sendTrueToken (logID, address, value) {
   trueToken.methods.transfer(address, value).send({
     from: admin.address,
     gas: '200000',
-    gasPrice: '10000000000'
+    gasPrice: '10000000000',
+    nonce: eNonce++
   }).on('transactionHash', hash => {
     TGToken.methods.updateOutLog(logID, hash).send({
       from: admin.address,
       gas: '4000000',
-      gasPrice: '1'
+      gasPrice: '1',
+      nonce: nonce++
     })
     console.log('> set hash: ' + hash + ' to log: ' + logID)
   }).on('error', error => {
@@ -96,11 +106,14 @@ app.all('*', (_, res, next) => {
   res.header('X-Powered-By', ' 3.2.1')
   next()
 })
+
 app.get('/', (_, res) => {
   res.send('hello world')
 })
+
 const pendingTxList = new Set()
 let nonce = 0
+
 app.post('/', async (req, res) => {
   const data = req.body
   const hash = data.hash.toLowerCase()
@@ -110,6 +123,35 @@ app.post('/', async (req, res) => {
   pendingTxList.add(hash)
   res.send('ok')
 })
+
+app.post('/inviter', async (req, res) => {
+  const data = req.body
+  const address = data.address
+  const code = data.code
+  let promise
+  if (code) {
+    promise = TTGame.methods.setInviter(address, code).send({
+      from: admin.address,
+      gas: '4000000',
+      gasPrice: '1',
+      nonce: nonce++
+    })
+  } else {
+    promise = TTGame.methods.genCode(address).send({
+      from: admin.address,
+      gas: '4000000',
+      gasPrice: '1',
+      nonce: nonce++
+    })
+  }
+  promise.then(() => {
+    res.send('ok')
+  }).catch(err => {
+    console.log(err.message || err)
+    res.send('error')
+  })
+})
+
 app.post('/query', async (req, res) => {
   const data = req.body
   const address = data.address
@@ -135,8 +177,6 @@ app.post('/query', async (req, res) => {
     res.send('ok')
   }
 })
-
-app.listen(config.port)
 
 const ethTopic = eWeb3.eth.abi.encodeEventSignature('Transfer(address,address,uint256)')
 const addressTo = '0x000000000000000000000000' + admin.address.substr(2, 40).toLowerCase()
@@ -201,4 +241,8 @@ async function checkTxList () {
 }
 checkTxList()
 
-console.log('---- Service start')
+tWeb3.eth.getTransactionCount(admin.address).then(latest => {
+  nonce = Math.max(latest, nonce)
+  app.listen(config.port)
+  console.log('---- Service start')
+})

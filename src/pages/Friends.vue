@@ -2,21 +2,11 @@
   <div>
     <div class="my-code">
       <p>我的邀请码</p>
-      <span class="code" v-if="hasICode">{{address.substr(2, 8).toUpperCase()}}</span>
-      <span v-else class="gen" :class="{
-        'pending': pending
-      }" @click="toCreateCode">生成邀请码</span>
+      <span class="code">{{address.substr(2, 8).toUpperCase()}}</span>
     </div>
     <div class="inviter" v-if="inviter">
       <span>我的邀请人:</span>
       <span>{{inviter.substr(0, 10)}}...{{inviter.substr(34, 8)}}</span>
-    </div>
-    <div class="inviter-set" v-else>
-      <span>输入邀请码</span>
-      <input type="text" v-model="inputCode">
-      <div :class="{
-        'pending': pending
-      }" @click="toSetInviter">确认</div>
     </div>
     <div class="friends">
       <p class="title">
@@ -42,13 +32,11 @@
 
 <script>
 import { mapActions, mapState } from 'vuex'
-import swal from 'sweetalert'
 
 export default {
   name: 'Friends',
   data () {
     return {
-      hasICode: true,
       pending: false,
       inviter: '',
       inputCode: '',
@@ -72,55 +60,15 @@ export default {
   methods: {
     ...mapActions({
       getFriends: 'getFriends',
-      genICode: 'genICode',
-      getInviter: 'getInviter',
-      setInviter: 'setInviter',
-      checkInvitationCode: 'checkInvitationCode'
+      getInviter: 'getInviter'
     }),
     update () {
-      this.checkInvitationCode().then(res => {
-        this.hasICode = res
-      })
       this.getFriends().then(res => {
         this.count = res.count
         this.friends = res.records
       })
       this.getInviter().then(res => {
         this.inviter = res
-      })
-    },
-    toSetInviter () {
-      if (!/^[\da-fA-F]{8}$/.test(this.inputCode)) {
-        swal('错误', '邀请码格式错误', 'errpr')
-        return
-      }
-      if (this.pending) {
-        return
-      }
-      this.pending = true
-      this.setInviter(this.inputCode).then(() => {
-        swal('邀请码设置成功', '', 'success')
-        this.update()
-      }).catch((err) => {
-        console.error(err)
-        swal('邀请码设置失败', '请确定邀请码是自己以外的其他可用邀请码，请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-      }).then(() => {
-        this.pending = false
-      })
-    },
-    toCreateCode () {
-      if (this.pending) {
-        return
-      }
-      this.pending = true
-      this.genICode().then(() => {
-        swal('邀请码生成成功', '', 'success')
-        this.update()
-      }).catch((err) => {
-        console.error(err)
-        swal('邀请码生成失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-      }).then(() => {
-        this.pending = false
       })
     }
   }
@@ -177,8 +125,6 @@ export default {
     color #fff
     margin-left 14px
     border-radius 15px
-  .pending
-    background-color #999
 .friends
   margin 14px 16px
   border solid 1px #bbb

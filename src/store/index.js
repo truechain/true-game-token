@@ -326,39 +326,34 @@ const actions = {
       }
     })
   },
-  async genICode ({ state }) {
-    if (state.address === '---') {
-      return []
-    }
-    const chainId = await web3.eth.net.getId()
-    const nonce = await web3.eth.getTransactionCount(state.address)
-    const input = TTGame.methods.genICode().encodeABI()
-    const tx = {
-      to: TTGame.options.address,
-      input,
-      nonce,
-      gas: 4000000,
-      gasPrice: 1,
-      chainId
-    }
-    return signThenSend(tx, state.address, `来自初链夺宝游戏的交易申请：创建游戏邀请码 (需极低beta TRUE手续费)`)
-  },
   async setInviter ({ state }, code) {
     if (state.address === '---') {
-      return []
+      return { error: true }
     }
-    const chainId = await web3.eth.net.getId()
-    const nonce = await web3.eth.getTransactionCount(state.address)
-    const input = TTGame.methods.setInviter('0x' + code).encodeABI()
-    const tx = {
-      to: TTGame.options.address,
-      input,
-      nonce,
-      gas: 4000000,
-      gasPrice: 1,
-      chainId
+    let promise
+    if (/^[\da-fA-F]{8}$/.test(code)) {
+      const address = await TTGame.methods.invitationCode('0x' + code).call()
+      if (address === '0x0000000000000000000000000000000000000000') {
+        return { error: true, code: 1 }
+      }
+      promise = axios.post(config.backend + '/inviter', {
+        address: state.address,
+        code: '0x' + code
+      })
+    } else {
+      promise = axios.post(config.backend + '/inviter', {
+        address: state.address
+      })
     }
-    return signThenSend(tx, state.address, '来自初链夺宝游戏的交易申请：填写邀请码 (需极低beta TRUE手续费)')
+    return promise.then(res => {
+      if (res.data === 'ok') {
+        return { error: false }
+      } else {
+        return { error: true, code: 2 }
+      }
+    }).catch(() => {
+      return { error: true, code: 3 }
+    })
   },
   async approve ({ state }) {
     const chainId = await web3.eth.net.getId()

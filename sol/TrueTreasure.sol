@@ -72,14 +72,22 @@ contract TrueTreasure {
     gameWinner = winner[_index];
   }
 
-  function setInviter (bytes4 _icode) public {
+  function setInviter (address _user, bytes4 _icode) public {
+    require(msg.sender == founder);
+    genCode(_user);
+    require(inviterOf[_user] == address(0));
     address inviter = invitationCode[_icode];
     require(inviter != address(0));
-    require(inviter != msg.sender);
-    require(inviterOf[msg.sender] == address(0));
-    inviterOf[msg.sender] = inviter;
+    inviterOf[_user] = inviter;
     _friends[inviter].push(msg.sender);
     _friendsTime[inviter].push(now);
+  }
+
+  function genCode (address _user) public {
+    require(msg.sender == founder);
+    bytes4 code = bytes4(bytes20(_user));
+    require(invitationCode[code] == address(0));
+    invitationCode[code] = _user;
   }
 
   function betRecords (address _user) public view returns (
@@ -142,13 +150,7 @@ contract TrueTreasure {
     }
   }
 
-  function genICode () public {
-    bytes4 iCode = bytes4(bytes20(msg.sender));
-    invitationCode[iCode] = msg.sender;
-  }
-
   function bet (uint256 _count) public {
-    genICode();
     _randomSeed = keccak256(abi.encodePacked(_randomSeed, msg.sender, now, gameIndexNow));
     if (now > endTime[gameIndexNow]) {
       _nextGame();
