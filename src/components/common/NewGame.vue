@@ -1,5 +1,5 @@
 <template>
-  <div class="tt-new-game">
+  <div class="tt-new-game card">
     <p class="title">开始新的一期游戏</p>
     <bet @update="update" />
   </div>
@@ -31,16 +31,12 @@ export default {
 <style lang="stylus" scoped>
 .tt-new-game
   margin 0 16px
-  padding 0 14px 14px
-  border solid 1px #BBB
-  border-radius 10px
+  min-height 200px
   width calc(100vw - 32px)
-  box-sizing border-box
   .title
-    color #101010
+    color #fff
     line-height 42px
     height 40px
     font-weight 500
-    border-bottom solid 1px #bbb
     margin-bottom 12px
 </style>

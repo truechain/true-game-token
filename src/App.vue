@@ -118,14 +118,14 @@ export default {
   bottom 0
   left 0
   width 100%
-  border-top solid 4px #fff
+  border-top solid 6px #6194ED
   a
     display block
     width 100%
-    height 40px
-    line-height 40px
+    height 50px
+    line-height 50px
     text-align center
-    background-color #0071bc
+    background-color #2861c4
     color #fff
 .waiting
   text-align center
