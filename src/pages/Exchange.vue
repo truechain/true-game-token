@@ -280,5 +280,5 @@ export default {
   font-size 14px
   line-height 20px
   margin 40px 16px
-  padding 0 20px
+  padding 0 15px
 </style>

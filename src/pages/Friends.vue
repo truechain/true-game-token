@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div class="my-code">
+    <div class="my-code card">
       <p>我的邀请码</p>
       <span class="code">{{address.substr(2, 8).toUpperCase()}}</span>
     </div>
@@ -8,22 +8,24 @@
       <span>我的邀请人:</span>
       <span>{{inviter.substr(0, 10)}}...{{inviter.substr(34, 8)}}</span>
     </div>
-    <div class="friends">
+    <div class="friends card">
       <p class="title">
         <span>邀请好友</span>
         <span>累计邀请{{count}}人</span>
       </p>
-      <ul>
-        <li v-for="(item, index) in friends" :key="index">
-          <span>{{item.friend.substr(0, 10)}}...{{item.friend.substr(34, 8)}}</span>
-          <span>{{item.time.toLocaleDateString() + ' ' + item.time.toTimeString().substr(0, 5)}}</span>
-        </li>
-      </ul>
+      <div v-if="friends.length">
+        <ul>
+          <li v-for="(item, index) in friends" :key="index">
+            <span>{{item.friend.substr(0, 10)}}...{{item.friend.substr(34, 8)}}</span>
+            <span>{{item.time.toLocaleDateString() + ' ' + item.time.toTimeString().substr(0, 5)}}</span>
+          </li>
+        </ul>
+        <div>最多仅显示最近10位邀请好友</div>
+      </div>
     </div>
-    <div class="friends">
+    <div class="notice">
       <p class="title">
         <span>邀请细则</span>
-        <span></span>
       </p>
       <p>邀请好友可获得好友在游戏中消费的15%作为佣金，在每期游戏公布后由智能合约自动发放。</p>
     </div>
@@ -78,7 +80,8 @@ export default {
 <style lang="stylus" scoped>
 .my-code
   text-align center
-  margin 14px 16px
+  margin 16px 16px 14px
+  padding 14px
   p
     font-size 14px
     padding 14px
@@ -86,17 +89,7 @@ export default {
     display block
     font-size 36px
     line-height 50px
-    margin 10px 0 30px
-  .gen
-    display block
-    line-height 36px
-    margin 17px auto 37px
-    background-color #0071bc
-    color #fff
-    width 120px
-    border-radius 18px
-  .pending
-    background-color #999
+    margin 10px 0
 .inviter
   font-size 14px
   margin 14px 16px
@@ -127,20 +120,22 @@ export default {
     border-radius 15px
 .friends
   margin 14px 16px
-  border solid 1px #bbb
-  border-radius 10px
   padding 14px
   font-size 14px
   .title
-    margin-bottom 6px
     span:first-child
       font-weight 500
     span:last-child
       float right
+  ul
+    padding 6px 14px
+    margin 10px 0
+    border-radius 10px
+    background-color #3e7be4
+    box-shadow 0 2px 4px #3972da inset
   li
     display flex
-    line-height 20px
-    margin-top 10px
+    line-height 40px
     span:first-child
       flex 1 1 auto
       overflow hidden
@@ -148,4 +143,11 @@ export default {
     span:last-child
       flex 0 0 130px
       text-align right
+.notice
+  font-size 14px
+  line-height 20px
+  margin 40px 16px
+  padding 0 15px
+  .title
+    font-weight 500
 </style>
