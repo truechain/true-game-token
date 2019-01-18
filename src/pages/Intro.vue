@@ -1,5 +1,5 @@
 <template>
-  <div class="intro">
+  <div class="intro card">
     <h2>游戏介绍</h2>
     <p>初链夺宝是一个完全公正、透明的去中心化DApp游戏，用户通过买入游戏号码，就有可能夺得最终游戏大奖。所有游戏交易均上链，可以通过区块浏览器查看所有详细记录。</p>
     <h3>规则说明</h3>
@@ -33,13 +33,21 @@ export default {
 <style lang="stylus" scoped>
 .intro
   font-size 14px
-  margin 14px 16px 200px
+  margin 16px 16px 100px
+  color #fff
 h2
   text-align center
   font-size 18px
+  line-height 50px
   font-weight 500
-  margin 28px 0
+  margin 20px auto
+  background-color #3e7be4
+  box-shadow 0 2px 4px #3972da inset
+  display table
+  padding 0 3em
+  border-radius 25px
 h3
+  margin-top 28px
   font-size 16px
   font-weight 500
 p
