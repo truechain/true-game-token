@@ -88,31 +88,27 @@ export default {
 
 <style lang="stylus" scoped>
 .tt-count-down
-  border solid 1px #bbb
-  border-radius 6px
+  border-radius 10px
   text-align center
   padding 8px
   margin-bottom 14px
+  background-color #3e7be4
+  box-shadow 0 2px 4px #3972da inset
   p
     font-size 14px
-    color #101010
     font-weight 500
   .time
     display flex
     justify-content center
-    font-size 20px
+    font-size 24px
     font-weight 500
-    color #101010
-    margin 6px 0
+    color #fff
+    margin 8px 0 2px
     span
-      width 36px
-      height 50px
-      box-sizing border-box
-      border solid 1px #bbb
-      border-radius 6px
-      line-height 48px
-      margin 0 3px
+      width 20px
+      line-height 30px
     div
-      font-size 32px
-      line-height 44px
+      font-size 28px
+      line-height 24px
+      width 20px
 </style>

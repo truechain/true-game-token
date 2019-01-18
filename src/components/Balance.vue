@@ -25,10 +25,10 @@ export default {
   height 70px
   display flex
   flex-direction column
-  background-color #3e7be4
   border-radius 10px
   justify-content center
   text-align center
+  background-color #3e7be4
   box-shadow 0 2px 4px #3972da inset
   p
     font-size 12px

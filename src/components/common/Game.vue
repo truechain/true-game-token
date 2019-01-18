@@ -1,18 +1,22 @@
 <template>
-  <div class="tt-game">
+  <div class="tt-game card">
     <p class="title">{{$tc('Game.number', gameIndex + 1)}}</p>
     <div class="info">
       <div>
         <p>本期已累计</p>
-        <span :style="{
-          'font-size': bettings >= 10000 ? '16px' : bettings >= 100 ? '20px' : '28px'
-        }">{{bettings}} TGB</span>
+        <span>
+          <span v-for="(char, index) in bettings.toString()" :key="index"
+            class="char-bg" :style="{
+              'font-size': bettings >= 10000 ? '16px' : bettings >= 100 ? '20px' : '28px'
+            }">{{char}}</span>
+          <span class="unit">TGB</span>
+        </span>
       </div>
       <div>
         <p>已经购买</p>
         <span :style="{
           'font-size': userBettings >= 10000 ? '16px' : userBettings >= 100 ? '20px' : '28px'
-        }">{{userBettings}} TGB</span>
+        }">{{userBettings}} <span class="unit">TGB</span></span>
       </div>
     </div>
     <div v-if="endTime">
@@ -96,37 +100,48 @@ export default {
 <style lang="stylus" scoped>
 .tt-game
   margin 0 16px
-  padding 0 14px 14px
-  border solid 1px #bbb
-  border-radius 10px
   min-height 200px
   width calc(100vw - 32px)
-  box-sizing border-box
   .title
-    color #101010
+    color #fff
     line-height 42px
     height 40px
     font-weight 500
-    border-bottom solid 1px #bbb
     margin-bottom 12px
   .info
     display grid
-    grid-template-columns repeat(2, 1fr)
+    grid-template-columns 3fr 2fr
     grid-gap 12px
     margin-bottom 12px
     div
-      border solid 1px #bbb
-      border-radius 6px
-      padding 12px 12px 6px
+      box-shadow 0 1px 0 #5b94ea inset
+      border-bottom solid 1px #3b75d8
+      border-radius 10px
+      padding 6px 12px
+      text-align center
+      background-color #3e7be4
     p
-      font-size 14px
-      color #888888
-      line-height 20px
+      font-size 12px
+      line-height 24px
     span
+      display inline-block
       font-size 28px
-      line-height 40px
+      margin 2px 0
+      line-height 36px
       font-weight 500
       white-space nowrap
+      color #ffe34a
+    .char-bg
+      display inline-block
+      background-color #2962c4
+      margin 0 .1em
+      width .9em
+      border-radius 3px
+    .unit
+      font-size 12px
+      line-height 14px
+      color #cfe1ff
+      margin 2px
   .end
     border solid 1px #bbb
     border-radius 6px

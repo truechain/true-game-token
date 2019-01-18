@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="tt-bet">
     <div class="form">
       <span class="price">1TGB / 份</span>
       <span class="x">x</span>
@@ -31,7 +31,6 @@ export default {
     ...mapActions({
       approve: 'approve',
       betOnChain: 'bet',
-      // getBetRecords: 'getBetRecords',
       updateTGBBalance: 'updateTGBBalance'
     }),
     checkCount () {
@@ -43,33 +42,6 @@ export default {
         return
       }
       this.pending = true
-      // this.getBetRecords().then(res => {
-      //   if (res.length === 0) {
-      //     return swal('提示', '第一次游玩前需要先使用TGB授权', 'warning').then(() => {
-      //       return this.approve()
-      //     })
-      //   }
-      // }).catch((err) => {
-      //   console.error(err)
-      //   swal('授权失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-      //   return { error: true }
-      // }).then(result => {
-      //   if (result && result.error) {
-      //     return
-      //   }
-      //   return this.betOnChain(this.count)
-      //     .then(() => {
-      //       console.log('--- bet successful')
-      //       this.updateTGBBalance()
-      //       this.$emit('update')
-      //       swal('购买成功', `已购买${this.count}份号码`, 'success')
-      //     }).catch(err => {
-      //       console.error(err)
-      //       swal('购买失败', '请确定已成功通过钱包签名交易，并检查网络链接', 'error')
-      //     })
-      // }).then(() => {
-      //   this.pending = false
-      // })
       this.betOnChain(this.count)
         .then(() => {
           console.log('--- bet successful')
@@ -88,37 +60,63 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.tt-bet
+  border-radius 10px
+  background-color #fff
+  padding 14px
 .form
   display flex
-  margin-bottom 10px
+  margin-bottom 14px
   line-height 28px
   text-align center
   font-size 14px
+  color #5c8feb
+  position relative
   .price
     flex 1 0 80px
-    border solid 1px #bbb
-    padding 4px
-    line-height 20px
+    background-color #cfe1ff
+    border-radius 5px
+    line-height 32px
+    padding 2px
   .x
     flex 0 0 auto
-    line-height 30px
+    line-height 36px
     font-weight 500
     margin 0 10px
+    font-size 18px
   input
     flex 4 1 auto
     width 60px
-    border solid 1px #bbb
-    padding 0 .8em
+    border none
+    padding 0 2em 0 .8em
     text-align start
+    background-color #cfe1ff
+    border-radius 5px
+    line-height 36px
+    color #3e7be4
+    font-size 18px
+  input:focus
+    outline-color #6194ed
   .unit
-    flex 0 0 30px
-    line-height 30px
+    position absolute
+    line-height 36px
+    top 0
+    right .8em
 .buy
-  background-color #0071bc
-  color #fff
+  background-color #2861c4
   line-height 36px
   text-align center
   border-radius 18px
-.pending
-  background-color #999
+  span
+    display block
+    background-color #508BF1
+    color #fff
+    line-height 36px
+    text-align center
+    border-radius 18px
+    transform translateY(-3px)
+    transition transform .4s, background-color .4s
+.pending span
+  background-color #cfe1ff
+  transform translateY(0)
 </style>

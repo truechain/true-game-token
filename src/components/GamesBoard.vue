@@ -1,11 +1,10 @@
 <template>
   <div class="tt-games-board">
-    <h2>{{$t('C.gamesBoard')}}</h2>
     <div class="board">
       <new-game v-if="canCreateNewGame" @update="updateGamesBoard" />
       <game v-for="index in gamesList" :key="index" :gameIndex="index" @update="updateGamesBoard" />
-      <div v-if="oldest" class="more">上拉加载更多</div>
-      <div v-else class="more">已加载全部</div>
+      <!-- <div v-if="oldest" class="more">上拉加载更多</div>
+      <div v-else class="more">已加载全部</div> -->
     </div>
   </div>
 </template>
@@ -39,7 +38,7 @@ export default {
     }
   },
   created () {
-    window.addEventListener('touchend', this.refresh)
+    // window.addEventListener('touchend', this.refresh)
     if (this.gameIndex >= 0) {
       this.update(this.gameIndex)
     }
@@ -49,17 +48,18 @@ export default {
       updateGameInfo: 'updateGameInfo'
     }),
     update (latestIndex) {
-      let start
-      if (this.gamesList.length) {
-        start = this.gamesList[0] + 1
-        this.oldest = this.gamesList[this.gamesList.length - 1]
-      } else {
-        start = Math.max(0, latestIndex - 2)
-        this.oldest = start
-      }
-      for (let i = start; i <= latestIndex; i++) {
-        this.gamesList.unshift(i)
-      }
+      this.gamesList = [latestIndex]
+      // let start
+      // if (this.gamesList.length) {
+      //   start = this.gamesList[0] + 1
+      //   this.oldest = this.gamesList[this.gamesList.length - 1]
+      // } else {
+      //   start = Math.max(0, latestIndex - 2)
+      //   this.oldest = start
+      // }
+      // for (let i = start; i <= latestIndex; i++) {
+      //   this.gamesList.unshift(i)
+      // }
     },
     updateGamesBoard () {
       console.log('--- update games board')

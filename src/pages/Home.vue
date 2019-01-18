@@ -1,6 +1,6 @@
 <template>
   <div>
-    <div id="banner">
+    <div id="banner" class="card">
       <div class="home-title">
         <img src="../assets/title@3x.png" alt="title">
       </div>
@@ -61,17 +61,6 @@ export default {
 <style lang="stylus" scoped>
 #banner
   margin 100px 16px 16px
-  background-color #508bf1
-  box-sizing border-box
-  border solid 1px #7CACFF
-  border-radius 15px
-  position relative
-  color #fff
-  padding 0 16px 20px
-  box-sizing border-box
-  box-shadow 0 0 30px 4px #3e7be4 inset
-  background-image url(../assets/points@3x.png)
-  background-size 10px
   p
     font-size 12px
     line-height 20px
@@ -88,7 +77,7 @@ export default {
   background-color #3b78e2
   border-radius 50px
   box-sizing border-box
-  border solid 2px #7CACFF
+  border solid 2px #7cacff
   box-shadow 0 0 40px 8px #0856c0 inset
   position relative
   img
@@ -101,9 +90,8 @@ nav
   display flex
   justify-content center
   a
-    background #508BF1
-    border solid 5px #1F58B9
-    color #CFE1FF
+    background #508bf1
+    border solid 5px #1f58b9
     font-size 12px
     line-height 14px
     width 60px
@@ -114,7 +102,7 @@ nav
     align-items center
     justify-content center
     margin 14px 8px
-    box-shadow 0 1px 0 #fff4 inset
+    box-shadow 0 1px 0 #5b94ea inset
     &:before
       content ''
       width 18px
