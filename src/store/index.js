@@ -20,6 +20,7 @@ const trueToken = new eWeb3.eth.Contract(trueTokenABI, config.ethTrueAddress)
 
 const admin = config.adminAddress
 const largeNumber = '100000000000000000000000000'
+const zeroAddress = '0x0000000000000000000000000000000000000000'
 
 const handles = new Map()
 document.addEventListener('message', e => {
@@ -57,7 +58,7 @@ class GameInfo {
           this.endTime = Number(res.gameEndTime) * 1000
           this.bettings = res.gameBettings
           this.winner = res.gameWinner
-          this.end = new Date().getTime() > this.endTime && this.winner !== '0x0000000000000000000000000000000000000000'
+          this.end = new Date().getTime() > this.endTime && this.winner !== zeroAddress
           return this
         }),
       TTGame.methods.bettings(this.index, this.user)
@@ -222,7 +223,7 @@ const actions = {
     return TTGame.methods.invitationCode(state.address.substr(0, 10))
       .call()
       .then(address => {
-        return address !== '0x0000000000000000000000000000000000000000'
+        return address !== zeroAddress
       })
   },
   async getInviter ({ state }) {
@@ -232,7 +233,7 @@ const actions = {
     return TTGame.methods.inviterOf(state.address)
       .call()
       .then(address => {
-        return address === '0x0000000000000000000000000000000000000000' ? '' : address
+        return address === zeroAddress ? '' : address
       })
   },
   async getGameInfo ({ state }, index) {
@@ -247,6 +248,24 @@ const actions = {
     game = new GameInfo(index, state.address)
     games.set(index, game)
     return game.update()
+  },
+  async getWinnerPaged (_, page) {
+    return TTGame.methods.getWinnerPaged(page)
+      .call()
+      .then(res => {
+        const records = []
+        for (let i = 0; i < res.winners.length; i++) {
+          if (res.winners[i] === zeroAddress) {
+            break
+          }
+          records.push({
+            winner: res.winners[i],
+            number: Number(res.numbers[i]) + 1,
+            value: web3.utils.fromWei(res.values[i], 'ether')
+          })
+        }
+        return { top: Number(res.top), records }
+      })
   },
   async getBetRecords ({ state }) {
     if (state.address === '---') {
@@ -333,7 +352,7 @@ const actions = {
     let promise
     if (/^[\da-fA-F]{8}$/.test(code)) {
       const address = await TTGame.methods.invitationCode('0x' + code).call()
-      if (address === '0x0000000000000000000000000000000000000000') {
+      if (address === zeroAddress) {
         return { error: true, code: 1 }
       }
       promise = axios.post(config.backend + '/inviter', {

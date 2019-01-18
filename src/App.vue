@@ -13,8 +13,11 @@
     </div>
     <div v-if="!hasICode" class="icode">
       <div>
-        <input type="text" v-model="inputCode" placeholder="邀请码（不填默认为平台00000000）">
-        <span @click="toSetInviter" :class="{ 'pending': pending }">确认</span>
+        <div>第一次使用请填写邀请码</div>
+        <input type="text" v-model="inputCode" placeholder="邀请码（不填默认为平台邀请）">
+        <div class="confirm" :class="{ 'pending': pending }">
+          <span @click="toSetInviter">确认</span>
+        </div>
       </div>
     </div>
   </div>
@@ -145,28 +148,41 @@ export default {
     justify-content center
     margin auto
     background-color #fff
-    padding 30px 16px
-    border-radius 10px
+    padding 14px
+    border-radius 15px
     display flex
     flex-direction column
+    color #5c8feb
   input
+    margin 14px 0
     font-size 14px
     width 220px
-    border solid 1px #bbb
+    border none
     padding 0 .8em
-    line-height 30px
+    text-align start
+    background-color #cfe1ff
+    border-radius 5px
     line-height 36px
-    border-radius 6px
-  span
-    background-color #0071bc
-    color #fff
-    margin 14px auto 0
+    color #3e7be4
+  input:focus
+    outline-color #6194ed
+  .confirm
+    background-color #2861c4
     line-height 36px
-    border-radius 6px
-    width 120px
     text-align center
-  .pending
-    background-color #999
+    border-radius 18px
+    span
+      display block
+      background-color #508BF1
+      color #fff
+      line-height 36px
+      text-align center
+      border-radius 18px
+      transform translateY(-3px)
+      transition transform .4s, background-color .4s
+  .pending span
+    background-color #cfe1ff
+    transform translateY(0)
 
 .fly-up-leave-active, .fly-up-enter-active
   transition transform .4s

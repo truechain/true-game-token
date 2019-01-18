@@ -23,6 +23,7 @@
       免费申请Beta TRUE（手续费）中...
     </div>
     <games-board v-if="address !== '---'" />
+    <winner v-if="address !== '---'" />
   </div>
 </template>
 
@@ -31,6 +32,7 @@ import { mapState, mapActions } from 'vuex'
 
 import Balance from '@/components/Balance'
 import GamesBoard from '@/components/GamesBoard'
+import Winner from '@/components/Winner'
 
 export default {
   name: 'Home',
@@ -53,7 +55,8 @@ export default {
   },
   components: {
     Balance,
-    GamesBoard
+    GamesBoard,
+    Winner
   }
 }
 </script>
