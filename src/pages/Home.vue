@@ -2,23 +2,23 @@
   <div>
     <div id="banner">
       <div class="home-title">
-        <h1>{{$t('title')}}</h1>
+        <img src="../assets/title@3x.png" alt="title">
       </div>
       <p class="">{{address}}</p>
       <nav>
         <router-link class="personal" :class="{
           'disable': pending
         }" :to="pending ? '/' : '/personal'">个人中心</router-link>
+        <router-link class="exchange" :class="{
+          'disable': pending
+        }" :to="pending ? '/' : '/exchange'">兑换TGB</router-link>
         <router-link class="friends" :class="{
           'disable': pending
         }" :to="pending ? '/' : '/friends'">邀请好友</router-link>
         <router-link class="intro" to="/intro">游戏介绍</router-link>
-        <router-link class="exchange" :class="{
-          'disable': pending
-        }" :to="pending ? '/' : '/exchange'">兑换TGB</router-link>
       </nav>
+      <balance />
     </div>
-    <balance />
     <div v-if="!ready" class="notice">
       免费申请Beta TRUE（手续费）中...
     </div>
@@ -60,53 +60,84 @@ export default {
 
 <style lang="stylus" scoped>
 #banner
-  height 180px
-  background-color #0071BC
+  margin 100px 16px 16px
+  background-color #508bf1
+  box-sizing border-box
+  border solid 1px #7CACFF
+  border-radius 15px
   position relative
   color #fff
-  padding 20px 16px
+  padding 0 16px 20px
   box-sizing border-box
+  box-shadow 0 0 30px 4px #3e7be4 inset
+  background-image url(../assets/points@3x.png)
+  background-size 10px
   p
     font-size 12px
-    line-height 18px
+    line-height 20px
+    background-color #2962C4
+    margin auto
+    border-radius 10px
+    margin 10px auto
+    padding 0 1em
+    display table
 .home-title
-  h1
-    font-size 20px
-    line-height 28px
-
-nav a
-  position absolute
-  background #fff
-  color #333
-  font-size 14px
-  line-height 30px
+  width 300px
+  height 100px
+  margin -60px auto 0
+  background-color #3b78e2
+  border-radius 50px
+  box-sizing border-box
+  border solid 2px #7CACFF
+  box-shadow 0 0 40px 8px #0856c0 inset
+  position relative
+  img
+    width 90%
+    position absolute
+    top 50%
+    left 50%
+    transform translate3d(-50%, -50%, 0)
+nav
+  display flex
+  justify-content center
+  a
+    background #508BF1
+    border solid 5px #1F58B9
+    color #CFE1FF
+    font-size 12px
+    line-height 14px
+    width 60px
+    height 60px
+    border-radius 50%
+    display flex
+    flex-direction column
+    align-items center
+    justify-content center
+    margin 14px 8px
+    box-shadow 0 1px 0 #fff4 inset
+    &:before
+      content ''
+      width 18px
+      height 18px
+      background-size 100%
+      margin-top -3px
+      margin-bottom 5px
 .disable
   background-color #ddd
-.personal
-  left 0
-  top 80px
-  border-radius 0 6px 6px 0
-  padding 0 10px 0 6px
-.friends
-  left 0
-  top 130px
-  border-radius 0 6px 6px 0
-  padding 0 10px 0 6px
-.intro
-  right 0
-  top 80px
-  border-radius 6px 0 0 6px
-  padding 0 6px 0 10px
-.exchange
-  right 0
-  top 130px
-  border-radius 6px 0 0 6px
-  padding 0 6px 0 10px
+.personal:before
+  background-image url(../assets/indexs/personal@3x.png)
+.friends:before
+  background-image url(../assets/indexs/friends@3x.png)
+.intro:before
+  background-image url(../assets/indexs/intro@3x.png)
+.exchange:before
+  background-image url(../assets/indexs/exchange@3x.png)
 
 .notice
   font-size 14px
   text-align center
-  color #888
+  color #cfe1ff
   line-height 40px
-  background-color #e7eeff
+  background-color #3e7be4
+  box-shadow 0 2px 4px #3972da inset
 </style>

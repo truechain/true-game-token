@@ -1,5 +1,8 @@
 /node_modules
 /dist
+/DESIGN
+
+.DS_Store
 
 package-lock.json
 

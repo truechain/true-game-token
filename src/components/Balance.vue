@@ -25,17 +25,20 @@ export default {
   height 70px
   display flex
   flex-direction column
-  background-color #0063a5
+  background-color #3e7be4
+  border-radius 10px
   justify-content center
   text-align center
-  color #fff
+  box-shadow 0 2px 4px #3972da inset
   p
     font-size 12px
     line-height 20px
+  color #cfe1ff
   span
-    font-size 28px
-    line-height 36px
+    font-size 24px
+    line-height 34px
     font-weight 500
+    color #fff
   .number
     letter-spacing: .06em
 </style>

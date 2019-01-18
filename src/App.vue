@@ -110,6 +110,9 @@ export default {
   -moz-osx-font-smoothing grayscale
   color #333
   margin-bottom 20px
+  background-color #6194ED
+  display flex
+  flex-direction column
 .return
   position fixed
   bottom 0
