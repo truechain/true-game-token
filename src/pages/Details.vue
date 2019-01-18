@@ -4,17 +4,17 @@
       <div :class="{ 'focus': focusMenu === 0 }" @click="toggleMenu(0)">兑入</div>
       <div :class="{ 'focus': focusMenu === 1 }" @click="toggleMenu(1)">兑出</div>
     </div>
-    <ul v-if="focusMenu === 0" class="details">
+    <ul v-if="focusMenu === 0" class="details-list">
       <li v-for="(item, index) in records" :key="index">
         <p class="title">兑入<span>+{{item.value}} TGB</span></p>
-        <p>时间: {{item.time.toLocaleString()}}</p>
+        <p>{{item.time.toLocaleString()}}</p>
         <p class="hash">ETH对应交易Hash: {{item.txHash}}</p>
       </li>
     </ul>
-    <ul v-if="focusMenu === 1" class="details">
+    <ul v-if="focusMenu === 1" class="details-list">
       <li v-for="(item, index) in records" :key="index">
         <p class="title">兑出<span>-{{item.value}} TGB</span></p>
-        <p>时间: {{item.time.toLocaleString()}}</p>
+        <p>{{item.time.toLocaleString()}}</p>
         <p class="hash">ETH对应交易Hash: {{item.txHash}}</p>
       </li>
     </ul>
@@ -54,7 +54,6 @@ export default {
       this.updateRecords()
     },
     updateRecords () {
-      this.records = []
       this.getExchangeRecords({
         toGetInRecord: this.focusMenu === 0,
         page: 0
@@ -70,27 +69,34 @@ export default {
 .tt-details
   margin-bottom 100px
 .details-nav
-  margin 14px 16px
-  border solid 1px #bbb
-  border-radius 10px
+  margin 14px 16px 0
+  border-radius 15px 15px 0 0
   display grid
   line-height 40px
   grid-template-columns 1fr 1fr
-  grid-gap 1px
   text-align center
-  background-color #bbb
   overflow hidden
   >div
-    background-color #fff
-    transition background-color .4s
+    background-color #cfe1ff
+    color #3e7be4
+    transition background-color .4s, color .4s
   .focus
-    background-color #eee !important
-.details li
-  margin 14px
-  padding 10px 14px
-  border solid 1px #bbb
-  border-radius 10px
-  font-size 14px
+    color #fff
+    background-color #3e7be4 !important
+.details-list
+  margin 0 16px
+  padding 7px
+  display flex
+  flex-direction column
+  background-color #fff
+  border-radius 0 0 15px 15px
+  li
+    margin 7px
+    padding 10px 14px
+    border solid 1px #cfe1ff
+    color #666
+    border-radius 10px
+    font-size 14px
   .title
     font-weight 500
     line-height 28px
@@ -98,6 +104,8 @@ export default {
     span
       float right
       font-size 20px
+  p
+    line-height 24px
   .hash
     font-size 12px
     color #888

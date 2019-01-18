@@ -31,7 +31,6 @@ export default {
 <style lang="stylus" scoped>
 .tt-new-game
   margin 0 16px
-  min-height 200px
   width calc(100vw - 32px)
   .title
     color #fff

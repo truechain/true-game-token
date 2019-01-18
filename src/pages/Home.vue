@@ -124,7 +124,6 @@ nav
 .notice
   font-size 14px
   text-align center
-  color #cfe1ff
   line-height 40px
   background-color #3e7be4
   box-shadow 0 2px 4px #3972da inset

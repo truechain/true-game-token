@@ -114,12 +114,12 @@ export default {
     grid-gap 12px
     margin-bottom 12px
     div
-      box-shadow 0 1px 0 #5b94ea inset
-      border-bottom solid 1px #3b75d8
       border-radius 10px
       padding 6px 12px
       text-align center
       background-color #3e7be4
+      box-shadow 0 1px 0 #5b94ea inset
+      border-bottom solid 1px #3b75d8
     p
       font-size 12px
       line-height 24px
@@ -143,13 +143,13 @@ export default {
       color #cfe1ff
       margin 2px
   .end
-    border solid 1px #bbb
     border-radius 6px
     text-align center
     padding 10px
+    background-color #3e7be4
+    box-shadow 0 2px 4px #3972da inset
     p
       font-size 14px
-      color #101010
       font-weight 500
     span
       font-size 12px

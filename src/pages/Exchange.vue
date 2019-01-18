@@ -1,23 +1,23 @@
 <template>
   <div>
-    <div class="intro">
-      <p>
-        <span>钱包地址:</span>
-        <span>{{address}}</span>
-      </p>
-      <p>
-        <span>代币余额:</span>
-        <span>{{trueBalance}} TRUE</span>
-      </p>
-      <p>
-        <span>游戏币:</span>
-        <span>{{TGBBalance}} TGB</span>
-      </p>
+    <div class="intro card">
+      <div class="address">{{address}}</div>
+      <div class="details">
+        <div>
+          <p class="title">代币余额</p>
+          <span>{{trueBalance}} TRUE</span>
+        </div>
+        <span class="border"></span>
+        <div>
+          <p class="title">游戏币</p>
+          <span>{{TGBBalance}} TGB</span>
+        </div>
+      </div>
     </div>
-    <div class="details">
+    <div class="more-details">
       <router-link to="/details">充提明细</router-link>
     </div>
-    <div class="exchange">
+    <div class="exchange card">
       <div class="ex-dire">
         <div class="ex-type" :class="{
           'ex-in': exchangeIn,
@@ -38,15 +38,17 @@
           <span>TGB</span>
         </div>
       </div>
-      <input class="ex-input" type="number" v-model="inputValue" @change="checkInput" placeholder="请输入兑换数量">
-      <div class="ex-notice">
-        矿工费用: <span v-if="exchangeIn">&lt;0.001 ETH</span><span v-else>极低</span>
-      </div>
-      <div class="ex-confirm" :class="{
-        'pending': (exInLock && exchangeIn) || (exOutLock && !exchangeIn)
-      }" @click="exchange">
-        <span v-if="exchangeIn">TRUE 兑入 TGB</span>
-        <span v-else>TGB 兑出 TRUE</span>
+      <div class="ex-box">
+        <input class="ex-input" type="number" v-model="inputValue" @change="checkInput" placeholder="请输入兑换数量">
+        <div class="ex-notice">
+          矿工费用: <span v-if="exchangeIn">&lt;0.001 ETH</span><span v-else>极低</span>
+        </div>
+        <div class="ex-confirm" :class="{
+          'pending': (exInLock && exchangeIn) || (exOutLock && !exchangeIn)
+        }" @click="exchange">
+          <span v-if="exchangeIn">TRUE 兑入 TGB</span>
+          <span v-else>TGB 兑出 TRUE</span>
+        </div>
       </div>
     </div>
     <div class="notice">
@@ -161,31 +163,40 @@ export default {
 <style lang="stylus" scoped>
 .intro
   font-size 14px
-  margin 14px 16px
-  padding 10px 14px
-  border solid 1px #bbb
-  border-radius 10px
-  p
-    white-space nowrap
-    display flex
+  margin 16px
+  text-align center
+  .address
+    font-size 12px
     line-height 20px
-    margin-bottom 6px
-    &:last-child
-      margin-bottom 0
+    background-color #2962C4
+    margin auto
+    border-radius 10px
+    margin 14px auto
+    padding 0 1em
+    display table
+  .border
+    background-color #fff
+  .details
+    display grid
+    margin-top 28px
+    grid-template-columns 1fr 1px 1fr
+    grid-gap 14px
+    >div
+      flex 1 1 50%
     span
-      text-overflow ellipsis
-      overflow hidden
-    span:first-child
-      flex 0 0 70px
-.details
+      padding-top 4px
+      display block
+      font-size 20px
+      line-height 24px
+      font-weight 500
+      color #fff
+.more-details
   margin 14px 16px
   font-size 14px
   text-align right
 .exchange
   margin 14px 16px
-  padding 14px
-  border solid 1px #bbb
-  border-radius 10px
+  padding-top 14px
   font-size 14px
   line-height 18px
 .ex-dire
@@ -200,6 +211,8 @@ export default {
     top 14px
     transition left .6s
     span
+      color #fff
+      font-weight 500
       font-size 24px
       line-height 30px
   .ex-in
@@ -210,7 +223,6 @@ export default {
     height 48px
     width 100px
     border-radius 6px
-    border solid 1px #bbb
     margin auto
     font-size 12px
     line-height 20px
@@ -218,31 +230,52 @@ export default {
     flex-direction column
     justify-content center
     text-align center
-    background-color #fff
     position relative
+    background-color #3e7be4
+    box-shadow 0 1px 0 #5b94ea inset
+    border-bottom solid 1px #3b75d8
     z-index 9
     svg
       margin 0 auto
+      fill #cfe1ff
+.ex-box
+  margin-top 14px
+  border-radius 10px
+  background-color #fff
+  padding 14px
+  color #5c8feb
 .ex-input
-  margin 14px 0
+  margin-bottom 14px
   display block
-  border solid 1px #bbb
   width 100%
-  line-height 34px
+  line-height 36px
   border-radius 6px
   padding 0 .8em
   box-sizing border-box
+  border none
+  background-color #cfe1ff
+  &:focus
+    outline-color #6194ed
 .ex-notice
   line-height 30px
 .ex-confirm
   margin-top 14px
-  background-color #0071bc
-  color #fff
+  background-color #2861c4
   line-height 36px
   text-align center
   border-radius 18px
-.pending
-  background-color #999
+  span
+    display block
+    background-color #508BF1
+    color #fff
+    line-height 36px
+    text-align center
+    border-radius 18px
+    transform translateY(-3px)
+    transition transform .4s, background-color .4s
+.pending span
+  background-color #cfe1ff
+  transform translateY(0)
 .notice
   font-size 14px
   line-height 20px

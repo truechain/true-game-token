@@ -20,6 +20,7 @@ export default {
   data () {
     return {
       gamesList: [],
+      canCreateNewGame: false,
       oldest: 0
     }
   },
@@ -27,14 +28,14 @@ export default {
     ...mapState({
       gameIndex: state => state.gameIndex,
       endTime: state => state.endTime
-    }),
-    canCreateNewGame () {
-      return new Date().getTime() > this.endTime
-    }
+    })
   },
   watch: {
     gameIndex (latestIndex) {
       this.update(latestIndex)
+    },
+    endTime (time) {
+      this.canCreateNewGame = new Date().getTime() > time
     }
   },
   created () {
@@ -49,6 +50,7 @@ export default {
     }),
     update (latestIndex) {
       this.gamesList = [latestIndex]
+      this.canCreateNewGame = new Date().getTime() > this.endTime
       // let start
       // if (this.gamesList.length) {
       //   start = this.gamesList[0] + 1
@@ -63,7 +65,9 @@ export default {
     },
     updateGamesBoard () {
       console.log('--- update games board')
-      this.updateGameInfo()
+      this.updateGameInfo().then(() => {
+        this.canCreateNewGame = new Date().getTime() > this.endTime
+      })
     },
     refresh () {
       const docEl = document.documentElement

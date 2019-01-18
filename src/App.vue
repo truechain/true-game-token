@@ -108,9 +108,8 @@ export default {
   font-family 'Avenir', Helvetica, Arial, sans-serif, 'PingFang SC', 'Microsoft YaHei'
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
-  color #333
   margin-bottom 20px
-  background-color #6194ED
+  background-color #6194ed
   display flex
   flex-direction column
 .return
@@ -118,7 +117,7 @@ export default {
   bottom 0
   left 0
   width 100%
-  border-top solid 6px #6194ED
+  border-top solid 6px #6194ed
   a
     display block
     width 100%
