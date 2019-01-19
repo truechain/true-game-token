@@ -3,5 +3,6 @@
   "betaTGTAddress": "0xbbBC3739B30E55Bd8594963faE41D9D795b2a77b",
   "betaGameAddress": "0xE5D40Ec4c3271DabB96F92814fFCd9Dc2Afd3C03",
   "adminAddress": "0x1782730ce1234f0a5850b750634b1970f9f4a89f",
+  "ethnet": "https://ropsten.infura.io",
   "backend": "http://127.0.0.1:3000"
 }

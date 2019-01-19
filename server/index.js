@@ -10,9 +10,7 @@ const config = require('./config.json')
 const pubConfig = require('../config.json')
 
 const tWeb3 = new Web3(config.wsProvider)
-// const eWeb3 = new Web3('https://mainnet.infura.io', 'eth')
-const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
-// const ethTrueAddress = '0xa4d17ab1ee0efdd23edc2869e7ba96b89eecf9ab'
+const eWeb3 = new Web3(pubConfig.ethnet, 'eth')
 const ethTrueAddress = pubConfig.ethTrueAddress.toLowerCase()
 const betaTGTAddress = pubConfig.betaTGTAddress
 const betaGameAddress = pubConfig.betaGameAddress

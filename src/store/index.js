@@ -14,8 +14,7 @@ const web3 = new Web3('https://api.truescan.net/rpc')
 const TGToken = new web3.eth.Contract(TGTokenABI, config.betaTGTAddress)
 const TTGame = new web3.eth.Contract(TTreasureABI, config.betaGameAddress)
 
-// const eWeb3 = new Web3('https://mainnet.infura.io', 'eth')
-const eWeb3 = new Web3('https://ropsten.infura.io', 'eth') // test eth net
+const eWeb3 = new Web3(config.ethnet, 'eth')
 const trueToken = new eWeb3.eth.Contract(trueTokenABI, config.ethTrueAddress)
 
 const admin = config.adminAddress
