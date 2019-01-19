@@ -10,7 +10,8 @@
           'disable': pending
         }" :to="pending ? '/' : '/personal'">个人中心</router-link>
         <router-link class="exchange" :class="{
-          'disable': pending
+          'disable': pending,
+          'flash': needExchange
         }" :to="pending ? '/' : '/exchange'">兑换TGB</router-link>
         <router-link class="friends" :class="{
           'disable': pending
@@ -21,6 +22,9 @@
     </div>
     <div v-if="!ready" class="notice">
       免费申请Beta TRUE（手续费）中...
+    </div>
+    <div v-if="needExchange" class="notice">
+      TGB余额不足，请先进行兑换
     </div>
     <games-board v-if="address !== '---'" />
     <winner v-if="address !== '---'" />
@@ -39,8 +43,12 @@ export default {
   computed: {
     ...mapState({
       address: state => state.address,
-      ready: state => state.ready
+      ready: state => state.ready,
+      balance: state => state.TGB
     }),
+    needExchange () {
+      return Number(this.balance) < 1
+    },
     pending () {
       return this.address === '---'
     }
@@ -91,20 +99,20 @@ export default {
     transform translate3d(-50%, -50%, 0)
 nav
   display flex
-  justify-content center
+  justify-content space-between
   a
-    background #508bf1
+    background-color #508bf1
     border solid 5px #1f58b9
     font-size 12px
     line-height 14px
-    width 60px
-    height 60px
+    width 56px
+    height 56px
     border-radius 50%
     display flex
     flex-direction column
     align-items center
     justify-content center
-    margin 14px 8px
+    margin 14px 0
     box-shadow 0 1px 0 #5b94ea inset
     &:before
       content ''
@@ -130,4 +138,15 @@ nav
   line-height 40px
   background-color #3e7be4
   box-shadow 0 2px 4px #3972da inset
+  margin 14px 0
+
+.flash
+  transform scale(1.1)
+  animation flash 1s infinite alternate
+
+@keyframes flash
+  from
+    background-color #6b9feb
+  to
+    background-color #508bf1
 </style>

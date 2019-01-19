@@ -13,7 +13,7 @@
         </span>
       </div>
       <div>
-        <p>已经购买</p>
+        <p>我已购买</p>
         <span :style="{
           'font-size': userBettings >= 10000 ? '16px' : userBettings >= 100 ? '20px' : '28px'
         }">{{userBettings}} <span class="unit">TGB</span></span>
