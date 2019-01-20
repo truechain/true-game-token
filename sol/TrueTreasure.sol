@@ -89,6 +89,9 @@ contract TrueTreasure {
     uint256 offset = _page * 10;
     top = gameIndexNow - 1;
     for (uint256 i = 0; i + offset < gameIndexNow; i++) {
+      if (i > 9) {
+        break;
+      }
       uint256 index = gameIndexNow - offset - i - 1;
       AwardRecord storage rec = winner[index];
       winners[i] = rec.winner;
