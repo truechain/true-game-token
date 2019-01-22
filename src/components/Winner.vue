@@ -54,7 +54,7 @@ export default {
       getWinnerPaged: 'getWinnerPaged'
     }),
     update () {
-      this.page = Math.max(Math.floor(this.gameIndex / 10), 0)
+      this.page = Math.max(Math.floor((this.gameIndex - 1) / 10), 0)
       this.getWinnerPaged(this.page).then(res => {
         this.top = res.top
         this.records = res.records
