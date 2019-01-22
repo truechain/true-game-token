@@ -51,11 +51,11 @@ export default {
   },
   methods: {
     ...mapActions({
-      getWinnerPaged: 'getWinnerPaged'
+      getWinnerPaged: 'getWinnerPaged',
+      getWinnerUnder: 'getWinnerUnder'
     }),
     update () {
-      this.page = Math.max(Math.floor((this.gameIndex - 1) / 10), 0)
-      this.getWinnerPaged(this.page).then(res => {
+      this.getWinnerUnder(this.gameIndex - 1).then(res => {
         this.top = res.top
         this.records = res.records
       })

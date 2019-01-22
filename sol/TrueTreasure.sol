@@ -87,7 +87,7 @@ contract TrueTreasure {
     numbers = new uint256[](10);
     values = new uint256[](10);
     uint256 offset = _page * 10;
-    top = gameIndexNow - 1;
+    top = gameIndexNow - 1 - offset;
     for (uint256 i = 0; i + offset < gameIndexNow; i++) {
       if (i > 9) {
         break;

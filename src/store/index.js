@@ -266,6 +266,27 @@ const actions = {
         return { top: Number(res.top), records }
       })
   },
+  async getWinnerUnder (_, top) {
+    const promiseList = []
+    for (let i = 0; i < 10; i++) {
+      if (i > top) {
+        break
+      }
+      promiseList.push(TTGame.methods.winner(top - i).call())
+    }
+    return Promise.all(promiseList).then(ress => {
+      return {
+        top: top,
+        records: ress.map(record => {
+          return {
+            winner: record.winner,
+            number: Number(record.number) + 1,
+            value: web3.utils.fromWei(record.value, 'ether')
+          }
+        })
+      }
+    })
+  },
   async getBetRecords ({ state }) {
     if (state.address === '---') {
       return []
