@@ -122,7 +122,7 @@ nav
       margin-top -3px
       margin-bottom 5px
 .disable
-  background-color #ddd
+  opacity .5
 .personal:before
   background-image url(../assets/indexs/personal@3x.png)
 .friends:before

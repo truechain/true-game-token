@@ -133,7 +133,6 @@ export default {
   text-align center
   padding 28px 14px
   font-size 14px
-  color #888
 
 .icode
   position fixed
