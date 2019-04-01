@@ -58,16 +58,18 @@ export default {
       setInviter: 'setInviter'
     }),
     init (e) {
-      if (e.data === 'onload') {
-        this.queryAccount().then(address => {
-          console.log(`--- loaded account: ${address}`)
-          return this.checkInvitationCode()
-        }).then(hasICode => {
-          this.hasICode = hasICode
-          this.pause = false
-        }).catch(() => {
-          swal('提示', '未能获取账户信息，请先在钱包中导入账户后打开', 'warning')
-        })
+      if (/onload/.test(e.data)) {
+        swal('提示', '因主网上线调整目前游戏功能在迁移中，请耐心等待', 'warning')
+        this.queryAccount()
+        // this.queryAccount().then(address => {
+        //   console.log(`--- loaded account: ${address}`)
+        //   return this.checkInvitationCode()
+        // }).then(hasICode => {
+        //   this.hasICode = hasICode
+        //   this.pause = false
+        // }).catch(() => {
+        //   swal('提示', '未能获取账户信息，请先在钱包中导入账户后打开', 'warning')
+        // })
         document.removeEventListener('message', this.init)
       }
     },
