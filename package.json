@@ -24,11 +24,10 @@
     "vue-i18n": "^8.7.0",
     "vue-router": "^3.0.2",
     "vuex": "^3.0.1",
-    "web3": "github:truechain/web3.js#master"
+    "web3true": "^1.0.8"
   },
   "devDependencies": {
     "@types/stylus": "^0.48.30",
-    "@types/web3": "^1.0.14",
     "@vue/cli-plugin-babel": "^3.0.0",
     "@vue/cli-plugin-eslint": "^3.0.0",
     "@vue/cli-service": "^3.0.0",

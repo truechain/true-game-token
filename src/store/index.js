@@ -2,7 +2,7 @@ import Vue from 'vue'
 import Vuex from 'vuex'
 
 import axios from 'axios'
-import Web3 from 'web3'
+import Web3 from 'web3true'
 import TGTokenABI from '../../sol/TrueGameToken.abi.json'
 import TTreasureABI from '../../sol/TrueTreasure.abi.json'
 import trueTokenABI from '../../sol/TrueToken.abi.json'
