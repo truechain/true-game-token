@@ -4,8 +4,11 @@
 
 ## 请求接口
 
+
+
 ### 获取当前使用的账户地址
-#### 发起
+
+#### 	发起
 ```js
 {
   timestamp: new Date().getTime(),
@@ -13,7 +16,7 @@
 }
 ```
 
-#### 返回
+#### 	返回
 ```js
 {
   timestamp: timestamp,
@@ -26,8 +29,11 @@
 }
 ```
 
+
+
 ### 签名指定交易
-#### 发起
+
+#### 	发起
 ```js
 {
   timestamp: new Date().getTime(),
@@ -48,7 +54,7 @@
 }
 ```
 
-#### 返回
+#### 	返回
 ```js
 {
   timestamp: timestamp,
@@ -61,7 +67,106 @@
 }
 ```
 
+
+
+## 设置标题
+
+### 	发起
+
+```js
+{
+  timestamp: new Date().getTime(),
+  method: 'set_title'
+}
+```
+
+
+
+## 关闭 WebView
+
+### 	发起
+
+```js
+{
+  timestamp: new Date().getTime(),
+  method: 'close'
+}
+```
+
+
+
+## 获取当前应用版本
+
+### 	发起
+
+```js
+{
+  timestamp: new Date().getTime(),
+  method: 'get_version'
+}
+```
+
+### 	返回
+
+```js
+{
+    timestamp: timestamp,
+    method: 'get_version',
+    data: {
+        ok: true,
+        version: 3.3.....,
+    }
+}
+```
+
+
+
+## 代付Gas签名
+
+### 	发起
+
+```js
+{
+  timestamp: new Date().getTime(),
+  method: 'get_signPrePaymentTx',
+  data: {
+    from: '0x123...',
+    tx: {
+      to: '0x123...',
+      value: 0,
+      input: '0x123...',
+      nonce: 0,
+      gas: 21000,
+      gasPrice: 1,
+      chainId: 123
+    },
+    message: '交易的内容说明，会展示给用户'
+  }
+}
+```
+
+### 	返回
+
+```js
+{
+    timestamp: timestamp,
+    method: 'get_signPrePaymentTx',
+    data: {
+        ok: true,
+        preSignedRawTx,
+    },
+};
+```
+
+
+
+
+
+
+
 ## 例子
+
+
 
 ### 初始化
 
@@ -74,6 +179,8 @@ document.addEventListener('message', (e) {
   }
 })
 ```
+
+
 
 ### 获取当前使用账户
 
